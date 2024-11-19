@@ -44,9 +44,9 @@ parser_logging = customize_parser(add_help=True)
 
 # Get the Format
 try:
-    arg_logging, unknow_args = parser_logging.parse_known_intermixed_args(sys.argv)
-    if unknow_args:
-        logging.warning(f"Verify the arguments {unknow_args}")
+    arg_logging, unknown_args = parser_logging.parse_known_intermixed_args(sys.argv)
+    if unknown_args:
+        logging.warning(f"Verify the arguments {unknown_args}")
 except SystemExit as e:
     raise SystemExit(f"Verify the arguments {e}")
 
