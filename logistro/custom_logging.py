@@ -94,7 +94,7 @@ def _print_structured(message, tag, level, package, file, module_function):
         "message": message,
         "tag": tag,
     }
-    print(json.dumps(log, indent=4))
+    print(json.dumps(log, indent=4), file=sys.stderr)
 
 
 # Generalized wrap functions
