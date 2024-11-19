@@ -21,7 +21,7 @@ handler = logging.StreamHandler(stream=sys.stderr)
 
 
 # Customize parser
-def customize_parser(add_help=True):
+def customize_parser(add_help=False):
     parser_logging = argparse.ArgumentParser(add_help=add_help)
     parser_logging.add_argument(
         "--human",
@@ -40,7 +40,7 @@ def customize_parser(add_help=True):
 
 
 # parser
-parser_logging = customize_parser()
+parser_logging = customize_parser(add_help=True)
 
 # Get the Format
 try:
