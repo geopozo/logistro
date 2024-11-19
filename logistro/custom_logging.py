@@ -109,7 +109,7 @@ def _log_message(level_func, message, tag=None):
 
 # Custom debug with custom level
 def debug2(message, tag=None):
-    if not arg_logging["human"]:
+    if not arg_logging.human:
         level, package, file, module_function = _get_name()
         _print_structured(message, tag, level, package, file, module_function)
         return
