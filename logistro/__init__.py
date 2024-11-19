@@ -1,4 +1,5 @@
 from .custom_logging import (
+    DEBUG2,
     customize_parser,
     logger,
     debug1,
@@ -11,6 +12,7 @@ from .custom_logging import (
 )
 
 __all__ = [
+    "DEBUG2",
     "customize_parser",
     "logger",
     "debug1",
