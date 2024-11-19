@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=65.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "logistro"
+description = "Custom logging module with human-readable and structured formats."
+readme = "README.md"
+requires-python = ">=3.9"
+version = "0.0.1a"
+
+[tool.setuptools.packages.find]
+where = ["logistro"]
