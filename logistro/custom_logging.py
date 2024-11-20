@@ -84,7 +84,7 @@ def _get_name():
 
 
 # This print the structured format
-def _print_structured(message, tag, level, package, file, module_function):
+def _print_structured(message, tag, stream_output, level, package, file, module_function):
     log = {
         "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         "level": level,
@@ -94,54 +94,59 @@ def _print_structured(message, tag, level, package, file, module_function):
         "message": message,
         "tag": tag,
     }
-    print(json.dumps(log, indent=4), file=sys.stderr)
+    print(json.dumps(log, indent=4), file=stream_output)
 
 
 # Generalized wrap functions
-def _log_message(level_func, message, tag=None):
+def _log_message(level_func, message, tag=None, stream_output=sys.stderr):
     if not arg_logging.human:
+        names = [handler.stream.name for handler in logger.handlers]
+        if stream_output.name not in names:
+            raise ValueError(
+                f"Verify the handlers, the stream_output is {stream_output.name} and the handlers are {names}"
+            )
         level, package, file, module_function = _get_name()
-        _print_structured(message, tag, level, package, file, module_function)
+        _print_structured(message, tag, stream_output, level, package, file, module_function)
         return
     tag = f" ({tag})" if tag else ""
     level_func(f"{_get_name()}: {message}{tag}")
 
 
 # Custom debug with custom level
-def debug2(message, tag=None):
+def debug2(message, tag=None, stream_output=sys.stderr):
     if not arg_logging.human:
         level, package, file, module_function = _get_name()
-        _print_structured(message, tag, level, package, file, module_function)
+        _print_structured(message, tag, stream_output, level, package, file, module_function)
         return
     tag = f" ({tag})" if tag else ""
     logger.log(DEBUG2, f"{_get_name()}: {message}{tag}")
 
 
 # Wrap function
-def debug1(message, tag=None):
-    _log_message(logger.debug, message, tag)
+def debug1(message, tag=None, stream_output=sys.stderr):
+    _log_message(logger.debug, message, tag, stream_output)
 
 
 # Wrap function
-def info(message, tag=None):
-    _log_message(logger.info, message, tag)
+def info(message, tag=None, stream_output=sys.stderr):
+    _log_message(logger.info, message, tag, stream_output)
 
 
 # Wrap function
-def warning(message, tag=None):
-    _log_message(logger.warning, message, tag)
+def warning(message, tag=None, stream_output=sys.stderr):
+    _log_message(logger.warning, message, tag, stream_output)
 
 
 # Wrap function
-def exception(message, tag=None):
-    _log_message(logger.exception, message, tag)
+def exception(message, tag=None, stream_output=sys.stderr):
+    _log_message(logger.exception, message, tag, stream_output)
 
 
 # Wrap function
-def error(message, tag=None):
-    _log_message(logger.error, message, tag)
+def error(message, tag=None, stream_output=sys.stderr):
+    _log_message(logger.error, message, tag, stream_output)
 
 
 # Wrap function
-def critical(message, tag=None):
-    _log_message(logger.critical, message, tag)
+def critical(message, tag=None, stream_output=sys.stderr):
+    _log_message(logger.critical, message, tag, stream_output)
