@@ -46,7 +46,20 @@ parser_logging = customize_parser(add_help=True)
 try:
     arg_logging, unknown_args = parser_logging.parse_known_intermixed_args(sys.argv)
     if unknown_args:
-        logging.warning(f"Verify the arguments {unknown_args}")
+        # Just for the warning
+        temp_handler = logging.StreamHandler(sys.stderr)
+
+        # Set the formatter
+        temp_formatter = logging.Formatter("%(levelname)s: %(message)s")
+        temp_handler.setFormatter(temp_formatter)
+        temp_logger = logging.getLogger("temp_logger")
+        temp_logger.addHandler(temp_handler)
+
+        # Print the warning
+        temp_logger.warning("Verify the arguments %s", unknown_args)
+
+        # Remove the handler
+        temp_logger.removeHandler(temp_handler)
 except SystemExit as e:
     raise SystemExit(f"Verify the arguments {e}")
 
@@ -84,7 +97,9 @@ def _get_name():
 
 
 # This print the structured format
-def _print_structured(message, tag, stream_output, level, package, file, module_function):
+def _print_structured(
+    message, tag, stream_output, level, package, file, module_function
+):
     log = {
         "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         "level": level,
@@ -106,7 +121,9 @@ def _log_message(level_func, message, tag=None, stream_output=sys.stderr):
                 f"Verify the handlers, the stream_output is {stream_output.name} and the handlers are {names}"
             )
         level, package, file, module_function = _get_name()
-        _print_structured(message, tag, stream_output, level, package, file, module_function)
+        _print_structured(
+            message, tag, stream_output, level, package, file, module_function
+        )
         return
     tag = f" ({tag})" if tag else ""
     level_func(f"{_get_name()}: {message}{tag}")
@@ -116,7 +133,9 @@ def _log_message(level_func, message, tag=None, stream_output=sys.stderr):
 def debug2(message, tag=None, stream_output=sys.stderr):
     if not arg_logging.human:
         level, package, file, module_function = _get_name()
-        _print_structured(message, tag, stream_output, level, package, file, module_function)
+        _print_structured(
+            message, tag, stream_output, level, package, file, module_function
+        )
         return
     tag = f" ({tag})" if tag else ""
     logger.log(DEBUG2, f"{_get_name()}: {message}{tag}")
