@@ -89,12 +89,7 @@ def _get_context_info():
     module_function = (
         upper_frame.f_code.co_name if hasattr(upper_frame, "f_code") else None
     )  # This gets the info of the function where uses logistro
-    if arg_logging.human:
-        if module_frame:
-            return f"{level.upper()} - {package}:{file}:{module_function}()"
-        return f"{level.upper()} - {package}:{file}"
-    else:
-        return level.upper(), package, file, module_function
+    return level.upper(), package, file, module_function
 
 
 # This print the structured format
@@ -115,19 +110,23 @@ def _print_structured(
 
 # Generalized wrap functions
 def _log_message(level_func, message, tag=None, stream_output=sys.stderr):
+    level, package, file, module_function = _get_context_info()
     if not arg_logging.human:
         names = [handler.stream.name for handler in logger.handlers]
         if stream_output.name not in names:
             raise ValueError(
                 f"Verify the handlers, the stream_output is {stream_output.name} and the handlers are {names}"
             )
-        level, package, file, module_function = _get_context_info()
         _print_structured(
             message, tag, stream_output, level, package, file, module_function
         )
         return
+
     tag = f" ({tag})" if tag else ""
-    level_func(f"{_get_context_info()}: {message}{tag}")
+    if module_function:
+        level_func(f"{level} - {package}:{file}:{module_function}(): {message}{tag}")
+    else:
+        level_func(f"{level} - {package}:{file}: {message}{tag}")
 
 
 # Custom debug with custom level
