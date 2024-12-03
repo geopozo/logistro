@@ -24,14 +24,14 @@ handler = logging.StreamHandler(stream=sys.stderr)
 def customize_parser(add_help=False):
     parser_logging = argparse.ArgumentParser(add_help=add_help)
     parser_logging.add_argument(
-        "--human",
+        "--logistro_human",
         action="store_true",
         dest="human",
         default=True,
         help="Format the logs for humans",
     )
     parser_logging.add_argument(
-        "--structured",
+        "--logistro_structured",
         action="store_false",
         dest="human",
         help="Format the logs as JSON",
