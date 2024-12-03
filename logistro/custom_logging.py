@@ -66,7 +66,7 @@ except SystemExit as e:
 # Create Formatter
 if arg_logging.human:
     formatter = logging.Formatter("%(asctime)s - %(message)s")  # TODO
-    handler.setFormatter(formatter) # Customize logger
+    handler.setFormatter(formatter)  # Customize logger
 
 # Add handler
 logger.addHandler(handler)
@@ -77,16 +77,18 @@ logger.propagate = False
 
 # Improve the name
 def _get_name():
-    level = inspect.currentframe().f_back.f_back.f_code.co_name
-    upper_frame = inspect.currentframe().f_back.f_back.f_back
+    level = (
+        inspect.currentframe().f_back.f_back.f_code.co_name
+    )  # This gets the name of the wrap function in logistro: DEBUG2, DEBUG1, WARNING, etc
+    upper_frame = inspect.currentframe().f_back.f_back.f_back # This gets the info of the module where uses logistro
     module_frame = inspect.getmodule(upper_frame) or inspect.getmodule(
         upper_frame.f_back
-    )
+    ) # This gets the module name where uses logistro
     package = module_frame.__package__
     file = module_frame.__name__
     module_function = (
         upper_frame.f_code.co_name if hasattr(upper_frame, "f_code") else None
-    )
+    ) # This gets the info of the function where uses logistro
     if arg_logging.human:
         if module_frame:
             return f"{level.upper()} - {package}:{file}:{module_function}()"
