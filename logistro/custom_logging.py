@@ -66,10 +66,9 @@ except SystemExit as e:
 # Create Formatter
 if arg_logging.human:
     formatter = logging.Formatter("%(asctime)s - %(message)s")  # TODO
+    handler.setFormatter(formatter) # Customize logger
 
-# Customize logger
-if arg_logging.human:
-    handler.setFormatter(formatter)
+# Add handler
 logger.addHandler(handler)
 
 # Avoid the log from the ancestor's logger
