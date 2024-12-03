@@ -75,20 +75,20 @@ logger.addHandler(handler)
 logger.propagate = False
 
 
-# Improve the name
-def _get_name():
-    level = (
-        inspect.currentframe().f_back.f_back.f_code.co_name
-    )  # This gets the name of the wrap function in logistro: DEBUG2, DEBUG1, WARNING, etc
-    upper_frame = inspect.currentframe().f_back.f_back.f_back # This gets the info of the module where uses logistro
+# Improve the name of the log
+def _get_context_info():
+    level = inspect.currentframe().f_back.f_back.f_code.co_name  # This gets the name of the wrap function in logistro: DEBUG2, DEBUG1, WARNING, etc
+    upper_frame = (
+        inspect.currentframe().f_back.f_back.f_back
+    )  # This gets the info of the module where uses logistro
     module_frame = inspect.getmodule(upper_frame) or inspect.getmodule(
         upper_frame.f_back
-    ) # This gets the module name where uses logistro
+    )  # This gets the module name where uses logistro
     package = module_frame.__package__
     file = module_frame.__name__
     module_function = (
         upper_frame.f_code.co_name if hasattr(upper_frame, "f_code") else None
-    ) # This gets the info of the function where uses logistro
+    )  # This gets the info of the function where uses logistro
     if arg_logging.human:
         if module_frame:
             return f"{level.upper()} - {package}:{file}:{module_function}()"
@@ -121,25 +121,25 @@ def _log_message(level_func, message, tag=None, stream_output=sys.stderr):
             raise ValueError(
                 f"Verify the handlers, the stream_output is {stream_output.name} and the handlers are {names}"
             )
-        level, package, file, module_function = _get_name()
+        level, package, file, module_function = _get_context_info()
         _print_structured(
             message, tag, stream_output, level, package, file, module_function
         )
         return
     tag = f" ({tag})" if tag else ""
-    level_func(f"{_get_name()}: {message}{tag}")
+    level_func(f"{_get_context_info()}: {message}{tag}")
 
 
 # Custom debug with custom level
 def debug2(message, tag=None, stream_output=sys.stderr):
     if not arg_logging.human:
-        level, package, file, module_function = _get_name()
+        level, package, file, module_function = _get_context_info()
         _print_structured(
             message, tag, stream_output, level, package, file, module_function
         )
         return
     tag = f" ({tag})" if tag else ""
-    logger.log(DEBUG2, f"{_get_name()}: {message}{tag}")
+    logger.log(DEBUG2, f"{_get_context_info()}: {message}{tag}")
 
 
 # Wrap function
