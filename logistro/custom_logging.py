@@ -1,9 +1,9 @@
-import sys
-import json
-import time
-import logging
-import inspect
 import argparse
+import inspect
+import logging
+import json
+import sys
+import time
 
 
 # new constant
