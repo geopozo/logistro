@@ -43,25 +43,22 @@ def customize_parser(add_help=False):
 parser_logging = customize_parser(add_help=True)
 
 # Get the Format
-try:
-    arg_logging, unknown_args = parser_logging.parse_known_intermixed_args(sys.argv)
-    if unknown_args:
-        # Just for the warning
-        temp_handler = logging.StreamHandler(sys.stderr)
+arg_logging, unknown_args = parser_logging.parse_known_intermixed_args(sys.argv)
+if unknown_args:
+    # Just for the warning
+    temp_handler = logging.StreamHandler(sys.stderr)
 
-        # Set the formatter
-        temp_formatter = logging.Formatter("%(levelname)s: %(message)s")
-        temp_handler.setFormatter(temp_formatter)
-        temp_logger = logging.getLogger("temp_logger")
-        temp_logger.addHandler(temp_handler)
+    # Set the formatter
+    temp_formatter = logging.Formatter("%(levelname)s: %(message)s")
+    temp_handler.setFormatter(temp_formatter)
+    temp_logger = logging.getLogger("temp_logger")
+    temp_logger.addHandler(temp_handler)
 
-        # Print the warning
-        temp_logger.warning("Verify the arguments %s", unknown_args)
+    # Print the warning
+    temp_logger.warning("Verify the arguments %s", unknown_args)
 
-        # Remove the handler
-        temp_logger.removeHandler(temp_handler)
-except SystemExit as e:
-    raise SystemExit(f"Verify the arguments {e}")
+    # Remove the handler
+    temp_logger.removeHandler(temp_handler)
 
 # Create Formatter
 if arg_logging.human:
