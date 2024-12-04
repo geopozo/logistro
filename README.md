@@ -71,4 +71,4 @@ All the fuctions in logistro to log, have this parameters:
 * `info()`
 * `warn()`
 * `error()`
-* `crticial()`
+* `critical()`
