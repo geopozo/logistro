@@ -6,9 +6,9 @@ Logistro is a VERY simple wrapper for python's logging.
 Logistro has for deafult value a `--logistro_human`, to has a human-redeable. And the --logistro_structured, it is better for the machines.
 #### Example of `--logistro_human`:
 ```
-2024-11-12 16:58:32,421 - DEBUG1 - my_package:my_package.main:_generate_image(): Hello world
-2024-11-12 16:58:34,569 - DEBUG2 - my_package:my_package.main:_generate_image(): Success 'Hello world'
-2024-11-12 16:58:34,570 - INFO - my_package:my_package.main:print_from_event(): You print a Hello world
+2024-11-12 16:58:32,421 - DEBUG1 - my_package:my_package.main:print(): Hello world
+2024-11-12 16:58:34,569 - DEBUG2 - my_package:my_package.main:print(): Success 'Hello world'
+2024-11-12 16:58:34,570 - INFO - my_package:my_package.main:print(): You print a Hello world
 
 ```
 #### Example of `--logistro_structured`:
