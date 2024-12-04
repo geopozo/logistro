@@ -1,3 +1,5 @@
+from logging import * #noqa
+
 from .custom_logging import (
     DEBUG2,
     customize_parser,
