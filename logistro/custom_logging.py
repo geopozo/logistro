@@ -74,18 +74,26 @@ logger.propagate = False
 
 # Improve the name of the log
 def _get_context_info():
-    level = inspect.currentframe().f_back.f_back.f_code.co_name  # This gets the name of the wrap function in logistro: DEBUG2, DEBUG1, WARNING, etc
-    upper_frame = (
-        inspect.currentframe().f_back.f_back.f_back
-    )  # This gets the info of the module where uses logistro
-    module_frame = inspect.getmodule(upper_frame) or inspect.getmodule(
-        upper_frame.f_back
-    )  # This gets the module name where uses logistro
-    package = module_frame.__package__
-    file = module_frame.__name__
+    # In logistro
+    logistro_wrap_fn = (
+        inspect.currentframe().f_back.f_back
+    )  # This gets the frame of the wrap function
+    level = (
+        logistro_wrap_fn.f_code.co_name
+    )  # This gets the name of the wrap function: debug2, debug1, warning, etc
+
+    # In the module where logistro is used
+    module_fn_frame = logistro_wrap_fn.f_back  # This gets the frame of the module
+    module_obj = inspect.getmodule(module_fn_frame) or inspect.getmodule(
+        module_fn_frame.f_back
+    )  # This gets the module object with the info where logistro is used
+    package = module_obj.__package__
+    file = module_obj.__name__
+
+    # The function where logistro is used
     module_function = (
-        upper_frame.f_code.co_name if hasattr(upper_frame, "f_code") else None
-    )  # This gets the info of the function where uses logistro
+        module_fn_frame.f_code.co_name if hasattr(module_fn_frame, "f_code") else None
+    )  # This gets the name of the function
     return level.upper(), package, file, module_function
 
 
