@@ -57,6 +57,12 @@ import logistro as logging
 logger = logistro.logger
 
 ```
+To set the level, you must use the logger of logistro:
+```python
+import logistro as logging
+
+logging.logger.setLevel(logging.DEBUG2) 
+```
 
 ## **Funtions for the logs**
 
