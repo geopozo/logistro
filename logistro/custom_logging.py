@@ -20,6 +20,14 @@ logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(stream=sys.stderr)
 
 
+# Split the list of strings
+def verify_string(arg):
+    if arg.startswith("[") and arg.endswith("]"):
+        return arg.split(",")
+    else:
+        raise ValueError("You must use a list like '[a, b, c]'")
+
+
 # Customize parser
 def customize_parser(add_help=False):
     parser_logging = argparse.ArgumentParser(add_help=add_help)
@@ -35,6 +43,13 @@ def customize_parser(add_help=False):
         action="store_false",
         dest="human",
         help="Format the logs as JSON",
+    )
+    parser_logging.add_argument(
+        "--logistro_tags",
+        type=verify_string,
+        dest="tags",
+        default=None,
+        help="Tags to filter the logs",
     )
     return parser_logging
 
