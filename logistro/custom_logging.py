@@ -44,6 +44,10 @@ parser_logging = customize_parser(add_help=True)
 
 # Get the Format
 arg_logging, unknown_args = parser_logging.parse_known_intermixed_args(sys.argv)
+if "--logistro_human" in sys.argv and "--logistro_structured" in sys.argv:
+    raise ValueError(
+        "You must use just one flag: '--logistro_human' or '--logistro_structured'. You must not use both flags."
+    )
 if unknown_args:
     # Just for the warning
     temp_handler = logging.StreamHandler(sys.stderr)
