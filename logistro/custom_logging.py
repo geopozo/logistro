@@ -47,11 +47,18 @@ def customize_parser(add_help=False):
         help="Format the logs as JSON",
     )
     parser_logging.add_argument(
-        "--logistro_tags",
+        "--include_tags",
         type=_verify_string,
-        dest="tags",
+        dest="included_tags",
         default=None,
-        help="Tags to filter the logs",
+        help="Tags to include the logs",
+    )
+    parser_logging.add_argument(
+        "--exclude_tags",
+        type=_verify_string,
+        dest="excluded_tags",
+        default=None,
+        help="Tags to exclude the logs",
     )
     return parser_logging
 
@@ -119,17 +126,22 @@ def _get_context_info():
 
 
 # This verify the strings of the tags
-def _verify_tags(arg, tags):
-    arg_tags = set(arg.tags) if arg.tags is not None else None
-    user_tags = set(tags) if tags is not None else None
-    if arg_tags and user_tags:
-        intersection = arg_tags.issubset(user_tags)
-        if not intersection:
-            return False
-        return True
-    elif arg_tags and not user_tags:
+def _verify_tags(logistro_tags, tags, process):
+    # Check None values
+    if not logistro_tags:
         return False
-    return True
+    elif logistro_tags and not tags:
+        return True
+
+    # Trasform lists to sets
+    arg_tags = set(logistro_tags)
+    user_tags = set(tags)
+
+    # Check tags
+    if process == "include":
+        return arg_tags.isdisjoint(user_tags)
+    if process == "exclude":
+        return not arg_tags.isdisjoint(user_tags)
 
 
 # This print the structured format
@@ -156,8 +168,11 @@ def _print_structured(message, tags, level, package, file, module_function):
 
 # Generalized wrap functions
 def _log_message(level_func, message, tags=None):
-    if not _verify_tags(arg_logging, tags):
+    if _verify_tags(arg_logging.included_tags, tags, "include") or _verify_tags(
+        arg_logging.excluded_tags, tags, "exclude"
+    ):
         return
+
     level, package, file, module_function = _get_context_info()
     if not arg_logging.human:
         _print_structured(message, tags, level, package, file, module_function)
