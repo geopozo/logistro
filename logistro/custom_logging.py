@@ -117,7 +117,7 @@ def _get_context_info():
 
 
 # This verify the strings of the tags
-def verify_tags(arg, tags):
+def _verify_tags(arg, tags):
     arg_tags = set(arg.tags) if arg.tags is not None else None
     user_tags = set(tags) if tags is not None else None
     if arg_tags and user_tags:
@@ -148,7 +148,7 @@ def _print_structured(
 
 # Generalized wrap functions
 def _log_message(level_func, message, tags=None, stream_output=sys.stderr):
-    if not verify_tags(arg_logging, tags):
+    if not _verify_tags(arg_logging, tags):
         return
     level, package, file, module_function = _get_context_info()
     if not arg_logging.human:
