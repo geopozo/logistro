@@ -148,6 +148,8 @@ def _print_structured(
 
 # Generalized wrap functions
 def _log_message(level_func, message, tags=None, stream_output=sys.stderr):
+    if not verify_tags(arg_logging, tags):
+        return
     level, package, file, module_function = _get_context_info()
     if not arg_logging.human:
         names = [handler.stream.name for handler in logger.handlers]
@@ -169,6 +171,8 @@ def _log_message(level_func, message, tags=None, stream_output=sys.stderr):
 
 # Custom debug with custom level
 def debug2(message, tags=None, stream_output=sys.stderr):
+    if not verify_tags(arg_logging, tags):
+        return
     if not arg_logging.human:
         level, package, file, module_function = _get_context_info()
         _print_structured(
