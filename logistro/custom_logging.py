@@ -163,24 +163,20 @@ def _log_message(level_func, message, tags=None, stream_output=sys.stderr):
         return
 
     tags = f" ({tags})" if tags else ""
-    if module_function:
-        level_func(f"{level} - {package}:{file}:{module_function}(): {message}{tags}")
+    logistro_log = (
+        f"{level} - {package}:{file}:{module_function}(): {message}{tags}"
+        if module_function
+        else f"{level} - {package}:{file}: {message}{tags}"
+    )
+    if level == "DEBUG2":
+        logger.log(DEBUG2, logistro_log)
     else:
-        level_func(f"{level} - {package}:{file}: {message}{tags}")
+        level_func(logistro_log)
 
 
 # Custom debug with custom level
 def debug2(message, tags=None, stream_output=sys.stderr):
-    if not verify_tags(arg_logging, tags):
-        return
-    if not arg_logging.human:
-        level, package, file, module_function = _get_context_info()
-        _print_structured(
-            message, tags, stream_output, level, package, file, module_function
-        )
-        return
-    tags = f" ({tags})" if tags else ""
-    logger.log(DEBUG2, f"{_get_context_info()}: {message}{tags}")
+    _log_message(_, message, tags, stream_output)
 
 
 # Wrap function
