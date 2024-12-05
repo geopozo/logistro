@@ -123,7 +123,7 @@ def _verify_tags(arg, tags):
     arg_tags = set(arg.tags) if arg.tags is not None else None
     user_tags = set(tags) if tags is not None else None
     if arg_tags and user_tags:
-        intersection = tags.issubset(user_tags)
+        intersection = arg_tags.issubset(user_tags)
         if not intersection:
             return False
         return True
