@@ -23,6 +23,8 @@ handler = logging.StreamHandler(stream=sys.stderr)
 # Split the list of strings
 def verify_string(arg):
     if arg.startswith("[") and arg.endswith("]"):
+        arg = arg.replace("[","")
+        arg = arg.replace("]","")
         return arg.split(",")
     else:
         raise ValueError("You must use a list like '[a, b, c]'")
