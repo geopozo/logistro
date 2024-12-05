@@ -116,6 +116,20 @@ def _get_context_info():
     return level.upper(), package, file, module_function
 
 
+# This verify the strings of the tags
+def verify_tags(arg, tags):
+    arg_tags = set(arg.tags) if arg.tags is not None else None
+    user_tags = set(tags) if tags is not None else None
+    if arg_tags and user_tags:
+        intersection = tags.issubset(user_tags)
+        if not intersection:
+            return False
+        return True
+    elif arg_tags and not user_tags:
+        return False
+    return True
+
+
 # This print the structured format
 def _print_structured(
     message, tags, stream_output, level, package, file, module_function
