@@ -145,7 +145,15 @@ def _print_structured(
         "message": message,
         "tags": tags,
     }
-    print(json.dumps(log, indent=4), file=stream_output)
+    levels = {
+        "CRITICAL": 50,
+        "ERROR": 40,
+        "WARNING": 30,
+        "INFO": 20,
+        "DEBUG1": 10,
+        "DEBUG2": 5,
+    }
+    logger.log(levels[level], json.dumps(log, indent=4))
 
 
 # Generalized wrap functions
