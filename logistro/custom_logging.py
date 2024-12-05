@@ -167,7 +167,7 @@ def _print_structured(message, tags, level, package, file, module_function):
 
 
 # Generalized wrap functions
-def _log_message(level_func, message, tags=None):
+def _log_message(level_func, message, tags=None, *args, **kwargs):
     if _verify_tags(arg_logging.included_tags, tags, "include") or _verify_tags(
         arg_logging.excluded_tags, tags, "exclude"
     ):
@@ -185,41 +185,41 @@ def _log_message(level_func, message, tags=None):
         else f"{level} - {package}:{file}: {message}{tags}"
     )
     if level == "DEBUG2":
-        logger.log(DEBUG2, logistro_log)
+        logger.log(DEBUG2, logistro_log, *args, **kwargs)
     else:
-        level_func(logistro_log)
+        level_func(logistro_log, *args, **kwargs)
 
 
 # Custom debug with custom level
-def debug2(message, tags=None):
-    _log_message(None, message, tags)
+def debug2(message, tags=None, *args, **kwargs):
+    _log_message(None, message, tags, *args, **kwargs)
 
 
 # Wrap function
-def debug1(message, tags=None):
-    _log_message(logger.debug, message, tags)
+def debug1(message, tags=None, *args, **kwargs):
+    _log_message(logger.debug, message, tags, *args, **kwargs)
 
 
 # Wrap function
-def info(message, tags=None):
-    _log_message(logger.info, message, tags)
+def info(message, tags=None, *args, **kwargs):
+    _log_message(logger.info, message, tags, *args, **kwargs)
 
 
 # Wrap function
-def warning(message, tags=None):
-    _log_message(logger.warning, message, tags)
+def warning(message, tags=None, *args, **kwargs):
+    _log_message(logger.warning, message, tags, *args, **kwargs)
 
 
 # Wrap function
-def exception(message, tags=None):
-    _log_message(logger.exception, message, tags)
+def exception(message, tags=None, *args, **kwargs):
+    _log_message(logger.exception, message, tags, *args, **kwargs)
 
 
 # Wrap function
-def error(message, tags=None):
-    _log_message(logger.error, message, tags)
+def error(message, tags=None, *args, **kwargs):
+    _log_message(logger.error, message, tags, *args, **kwargs)
 
 
 # Wrap function
-def critical(message, tags=None):
-    _log_message(logger.critical, message, tags)
+def critical(message, tags=None, *args, **kwargs):
+    _log_message(logger.critical, message, tags, *args, **kwargs)
