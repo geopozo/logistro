@@ -21,7 +21,7 @@ handler = logging.StreamHandler(stream=sys.stderr)
 
 
 # Split the list of strings
-def verify_string(arg):
+def _verify_string(arg):
     if arg.startswith("[") and arg.endswith("]"):
         arg = arg.replace("[", "")
         arg = arg.replace("]", "")
@@ -48,7 +48,7 @@ def customize_parser(add_help=False):
     )
     parser_logging.add_argument(
         "--logistro_tags",
-        type=verify_string,
+        type=_verify_string,
         dest="tags",
         default=None,
         help="Tags to filter the logs",
