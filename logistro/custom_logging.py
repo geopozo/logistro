@@ -176,7 +176,7 @@ def _log_message(level_func, message, tags=None, stream_output=sys.stderr):
 
 # Custom debug with custom level
 def debug2(message, tags=None, stream_output=sys.stderr):
-    _log_message(_, message, tags, stream_output)
+    _log_message(None, message, tags, stream_output)
 
 
 # Wrap function
