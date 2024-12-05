@@ -23,8 +23,8 @@ handler = logging.StreamHandler(stream=sys.stderr)
 # Split the list of strings
 def verify_string(arg):
     if arg.startswith("[") and arg.endswith("]"):
-        arg = arg.replace("[","")
-        arg = arg.replace("]","")
+        arg = arg.replace("[", "")
+        arg = arg.replace("]", "")
         return arg.split(",")
     else:
         raise ValueError("You must use a list like '[a, b, c]'")
@@ -133,9 +133,7 @@ def _verify_tags(arg, tags):
 
 
 # This print the structured format
-def _print_structured(
-    message, tags, stream_output, level, package, file, module_function
-):
+def _print_structured(message, tags, level, package, file, module_function):
     log = {
         "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         "level": level,
@@ -157,19 +155,12 @@ def _print_structured(
 
 
 # Generalized wrap functions
-def _log_message(level_func, message, tags=None, stream_output=sys.stderr):
+def _log_message(level_func, message, tags=None):
     if not _verify_tags(arg_logging, tags):
         return
     level, package, file, module_function = _get_context_info()
     if not arg_logging.human:
-        names = [handler.stream.name for handler in logger.handlers]
-        if stream_output.name not in names:
-            raise ValueError(
-                f"Verify the handlers, the stream_output is {stream_output.name} and the handlers are {names}"
-            )
-        _print_structured(
-            message, tags, stream_output, level, package, file, module_function
-        )
+        _print_structured(message, tags, level, package, file, module_function)
         return
 
     tags = f" ({tags})" if tags else ""
@@ -185,35 +176,35 @@ def _log_message(level_func, message, tags=None, stream_output=sys.stderr):
 
 
 # Custom debug with custom level
-def debug2(message, tags=None, stream_output=sys.stderr):
-    _log_message(None, message, tags, stream_output)
+def debug2(message, tags=None):
+    _log_message(None, message, tags)
 
 
 # Wrap function
-def debug1(message, tags=None, stream_output=sys.stderr):
-    _log_message(logger.debug, message, tags, stream_output)
+def debug1(message, tags=None):
+    _log_message(logger.debug, message, tags)
 
 
 # Wrap function
-def info(message, tags=None, stream_output=sys.stderr):
-    _log_message(logger.info, message, tags, stream_output)
+def info(message, tags=None):
+    _log_message(logger.info, message, tags)
 
 
 # Wrap function
-def warning(message, tags=None, stream_output=sys.stderr):
-    _log_message(logger.warning, message, tags, stream_output)
+def warning(message, tags=None):
+    _log_message(logger.warning, message, tags)
 
 
 # Wrap function
-def exception(message, tags=None, stream_output=sys.stderr):
-    _log_message(logger.exception, message, tags, stream_output)
+def exception(message, tags=None):
+    _log_message(logger.exception, message, tags)
 
 
 # Wrap function
-def error(message, tags=None, stream_output=sys.stderr):
-    _log_message(logger.error, message, tags, stream_output)
+def error(message, tags=None):
+    _log_message(logger.error, message, tags)
 
 
 # Wrap function
-def critical(message, tags=None, stream_output=sys.stderr):
-    _log_message(logger.critical, message, tags, stream_output)
+def critical(message, tags=None):
+    _log_message(logger.critical, message, tags)
