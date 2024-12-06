@@ -96,7 +96,7 @@ def customize_pytest_addoption(parser):
 
 # This modify the formatter to use the human strategy
 def set_human():
-    global arg_logging, formatter, handler, logger
+    global arg_logging, formatter
 
     # Set True in human arg
     arg_logging.human = True
@@ -108,7 +108,7 @@ def set_human():
 
 # This modify the formatter to use the structured strategy
 def set_structured():
-    global arg_logging, formatter, handler, logger
+    global arg_logging, formatter
 
     # Set False in human arg
     arg_logging.human = False
