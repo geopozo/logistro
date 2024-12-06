@@ -17,7 +17,7 @@ logging.addLevelName(DEBUG2, "DEBUG2")
 logger = logging.getLogger(__name__)
 
 # Create handler
-handler = logging.StreamHandler(stream=sys.stderr)
+handler = logging.StreamHandler()
 
 
 # Split the list of strings
@@ -74,7 +74,7 @@ if "--logistro_human" in sys.argv and "--logistro_structured" in sys.argv:
     )
 if unknown_args:
     # Just for the warning
-    temp_handler = logging.StreamHandler(sys.stderr)
+    temp_handler = logging.StreamHandler()
 
     # Set the formatter
     temp_formatter = logging.Formatter("%(levelname)s: %(message)s")
