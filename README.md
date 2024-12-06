@@ -141,37 +141,14 @@ import logistro as logging
 ```
 This should initialize all the code within logistro to use in your own script
 
-## **Curstomize parser**
-If you want to set args in python with argparse to your project and use, please use this method `customize_parser()`. This parser enables the flags:
-* `--logistro_human`
-* `--logistro_structured`
+### **Set the level**
+Set the logistro logger level. Use `set_level(lvl)` and customize your logs. The level must be integer.
 
-```python
-import argparse
-import logistro as logging
-
-parser_logging = logging.customize_parser(add_help=False) # This is our method to create the custom parser
-
-# Here you must use the logistro parser as parent in argparse.ArgumentParser()
-parser = argparse.ArgumentParser(description='tool to help debug problems', parents=[parser_logging])
-
-# Set your arg
-parser.add_argument('--no-run', dest='run', action='store_false')
-```
-
-## **Use logger**
-You can use use the logger from logistro as you want, just get the attribute `.logger`.
 ```python
 import logistro as logging
 
-logger = logistro.logger
-
-```
-To set the level, you must use the logger of logistro:
-```python
-import logistro as logging
-
-logging.logger.setLevel(logging.DEBUG2) 
+logging.set_level(logging.DEBUG2) # This change the level to the lowest level of logistro
+logging.set_level(logging.ERROR) # This change the level to ERROR, just will see logs with ERROR and CRITICAL
 ```
 
 ## **Funtions for the logs**
@@ -188,3 +165,64 @@ All the fuctions in logistro to log, have this parameters:
 * `warn()`
 * `error()`
 * `critical()`
+
+## **Details**
+The functions and attributes described here are useful for deep develop for logs.
+
+### **Customize parser**
+If you want to set args in python with argparse to your project and use it, please use this method `customize_parser()`. This parser enables the flags:
+* `--logistro_human`
+* `--logistro_structured`
+* `--include_tags`
+* `--exclude_tags`
+
+```python
+import argparse
+import logistro as logging
+
+parser_logging = logging.customize_parser(add_help=False) # This is our method to create the custom parser
+
+# Here you must use the logistro parser as parent in argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description='tool to help debug problems', parents=[parser_logging])
+
+# Set your arg
+parser.add_argument('--no-run', dest='run', action='store_false')
+```
+
+### **Customize pytest_addoption()**
+If you want to set the logistro args in your tests to use in your projects, please use this method `customize_pytest_addoption()`. This enables the flags:
+* `--logistro_human`
+* `--logistro_structured`
+* `--include_tags`
+* `--exclude_tags`
+
+In your conftest.py:
+```python
+import pytest
+import logistro as logging
+
+def pytest_addoption(parser):
+    parser.addoption("--debug", action="store_true", dest="debug", default=False)
+    logging.customize_pytest_addoption(parser) # Use our function to improve your develop tools for logs with pytest
+```
+
+
+### **Use logger**
+You can use use the logger from logistro as you want, just get the attribute `.logger`.
+```python
+import logistro as logging
+
+logger = logistro.logger
+
+```
+To set the level, you must use the logger of logistro:
+```python
+import logistro as logging
+
+logging.logger.setLevel(logging.DEBUG2) 
+```
+### **Use human format**
+Set the human format in your code without the flags. Use `set_human()` and simplify this task. Note: The default format in logistro is human.
+
+### **Use structured format**
+Set the structure format in your code without the flags. Use `set_structured()` and simplify this task. This is the best for machines.
