@@ -63,6 +63,37 @@ def customize_parser(add_help=False):
     return parser_logging
 
 
+# Customize parser in pytest_addoption()
+def customize_pytest_addoption(parser):
+    parser.addoption(
+        "--logistro_human",
+        action="store_true",
+        dest="human",
+        default=True,
+        help="Format the logs for humans",
+    )
+    parser.addoption(
+        "--logistro_structured",
+        action="store_false",
+        dest="human",
+        help="Format the logs as JSON",
+    )
+    parser.addoption(
+        "--include_tags",
+        type=_verify_string,
+        dest="included_tags",
+        default=None,
+        help="Tags to include the logs",
+    )
+    parser.addoption(
+        "--exclude_tags",
+        type=_verify_string,
+        dest="excluded_tags",
+        default=None,
+        help="Tags to exclude the logs",
+    )
+
+
 # parser
 parser_logging = customize_parser(add_help=True)
 
