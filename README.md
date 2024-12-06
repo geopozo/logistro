@@ -3,25 +3,101 @@
 Logistro is a VERY simple wrapper for python's logging.
 
 ## Flags for the logs
-Logistro has as deafult value a `--logistro_human`, to has a human-redeable. And the `--logistro_structured`, it is better for the machines.
+`Logistro` defaults to `--logistro_human`, which provides a human-readable format. Alternatively, `--logistro_structured` is better suited for machines, as it uses a JSON format for viewing logs.
 #### Example of `--logistro_human`:
+In our my_package/tests/app.py
+```python
+import my_package
+import logistro as logging
+
+logging.set_level(logging.DEBUG2)
+
+logging.info("This is app.py to verify logistro functions")
+my_package.print_module()
+logging.info("Thanks!")
 ```
-2024-11-12 16:58:32,421 - DEBUG1 - my_package:my_package.main:print(): Hello world
-2024-11-12 16:58:34,569 - DEBUG2 - my_package:my_package.main:print(): Success 'Hello world'
-2024-11-12 16:58:34,570 - INFO - my_package:my_package.main:print(): You print a Hello world
+In bash:
+
+```bash
+$ python tests/app.py
+```
+In the log:
+```log
+WARNING: Verify the arguments ['tests/app.py']
+2024-12-06 14:10:05,735 - INFO - None:__main__:<module>(): This is app.py to verify logistro functions
+2024-12-06 14:10:05,735 - DEBUG2 - my_package:my_package.module:get_file(): The functions get_file() starts here
+2024-12-06 14:10:05,735 - INFO - my_package:my_package:print_module(): We are in my_package (['info'])
+2024-12-06 14:10:05,735 - DEBUG1 - my_package:my_package:print_module(): Success print_module
+2024-12-06 14:10:05,736 - INFO - None:__main__:<module>(): Thanks!
 
 ```
 #### Example of `--logistro_structured`:
+In our my_package/tests/app.py
+```python
+import my_package
+import logistro as logging
+
+logging.set_level(logging.DEBUG2)
+
+logging.info("This is app.py to verify logistro functions")
+my_package.print_module()
+logging.info("Thanks!")
 ```
+In bash:
+```bash
+$ python tests/app.py --logistro_structured
+```
+In the log:
+```log
+WARNING: Verify the arguments ['tests/app.py']
 {
-    "time": "2024-12-02 17:06:50",
+    "time": "2024-12-06 14:14:53",
+    "level": "INFO",
+    "package": null,
+    "file": "__main__",
+    "module_function": "<module>",
+    "message": "This is app.py to verify logistro functions",
+    "tags": null
+}
+{
+    "time": "2024-12-06 14:14:53",
+    "level": "DEBUG2",
+    "package": "my_package",
+    "file": "my_package.module",
+    "module_function": "get_file",
+    "message": "The functions get_file() starts here",
+    "tags": null
+}
+{
+    "time": "2024-12-06 14:14:53",
+    "level": "INFO",
+    "package": "my_package",
+    "file": "my_package",
+    "module_function": "print_module",
+    "message": "We are in my_package",
+    "tags": [
+        "info"
+    ]
+}
+{
+    "time": "2024-12-06 14:14:53",
     "level": "DEBUG1",
     "package": "my_package",
-    "file": "my_package.my_package",
-    "module_function": "print",
-    "message": "Hello world",
-    "tag": null
+    "file": "my_package",
+    "module_function": "print_module",
+    "message": "Success print_module",
+    "tags": null
 }
+{
+    "time": "2024-12-06 14:14:53",
+    "level": "INFO",
+    "package": null,
+    "file": "__main__",
+    "module_function": "<module>",
+    "message": "Thanks!",
+    "tags": null
+}
+
 ```
 
 
