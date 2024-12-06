@@ -2,6 +2,40 @@
 
 Logistro is a VERY simple wrapper for python's logging.
 
+## Quick start
+In our my_package/tests/app.py:
+
+```python
+import logistro as logging
+
+logging.critical("Hello world with critical")
+logging.error("Hello world with error")
+logging.warning("Hello world with warning")
+logging.info("Hello world with info")
+
+logging.set_level(logging.DEBUG2)
+logging.debug1("Hello world with debug1")
+logging.debug2("Hello world with debug2")
+
+```
+In bash:
+
+```bash
+$ python tests/quick_start.py
+```
+In the log:
+
+```log
+WARNING: Verify the arguments ['tests/quick_start.py']
+2024-12-06 14:31:47,232 - CRITICAL - None:__main__:<module>(): Hello world with critical
+2024-12-06 14:31:47,233 - ERROR - None:__main__:<module>(): Hello world with error
+2024-12-06 14:31:47,233 - WARNING - None:__main__:<module>(): Hello world with warning
+2024-12-06 14:31:47,233 - DEBUG1 - None:__main__:<module>(): Hello world with debug1
+2024-12-06 14:31:47,233 - DEBUG2 - None:__main__:<module>(): Hello world with debug2
+
+```
+
+
 ## Flags for the logs
 `Logistro` defaults to `--logistro_human`, which provides a human-readable format. Alternatively, `--logistro_structured` is better suited for machines, as it uses a JSON format for viewing logs.
 #### Example of `--logistro_human`:
