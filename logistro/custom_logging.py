@@ -94,6 +94,16 @@ def customize_pytest_addoption(parser):
     )
 
 
+def set_human():
+    global arg_logging
+    arg_logging.human = True
+
+
+def set_structured():
+    global arg_logging
+    arg_logging.human = False
+
+
 # parser
 parser_logging = customize_parser(add_help=True)
 
