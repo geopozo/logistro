@@ -221,6 +221,11 @@ def _log_message(level_func, message, tags=None, *args, **kwargs):
         level_func(logistro_log, *args, **kwargs)
 
 
+# Wrap set level function
+def set_level(lvl):
+    logger.setLevel(lvl)
+
+
 # Custom debug with custom level
 def debug2(message, tags=None, *args, **kwargs):
     _log_message(None, message, tags, *args, **kwargs)
