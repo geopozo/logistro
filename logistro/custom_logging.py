@@ -94,14 +94,28 @@ def customize_pytest_addoption(parser):
     )
 
 
+# This modify the formatter to use the human strategy
 def set_human():
-    global arg_logging
+    global arg_logging, formatter, handler, logger
+
+    # Set True in human arg
     arg_logging.human = True
 
+    # Set the formatter
+    formatter = logging.Formatter("%(asctime)s - %(message)s")
+    handler.setFormatter(formatter)  # Customize logger
 
+
+# This modify the formatter to use the structured strategy
 def set_structured():
-    global arg_logging
+    global arg_logging, formatter, handler, logger
+
+    # Set False in human arg
     arg_logging.human = False
+
+    # Set the formatter
+    formatter = logging.Formatter("%(message)s")
+    handler.setFormatter(formatter)  # Customize logger
 
 
 # parser
