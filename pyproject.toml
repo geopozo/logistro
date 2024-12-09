@@ -11,3 +11,9 @@ description = "Custom logging module with human-readable and structured formats.
 readme = "README.md"
 requires-python = ">=3.9"
 dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+log_cli = true
