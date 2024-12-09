@@ -1,6 +1,7 @@
 import argparse
 import sys
 import logistro
+import logging
 
 
 def test_customize_parser():
@@ -14,6 +15,10 @@ def test_customize_parser():
 
 def test_customize_pytest_addoption(human):
     assert human or not human
+
+
+def test_level_debug2():
+    assert logging.getLevelName(5) == "DEBUG2"
 
 
 def test_structured_logs(caplog):
