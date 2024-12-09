@@ -156,7 +156,6 @@ logging.set_level(logging.ERROR) # This change the level to ERROR, just will see
 All the fuctions in logistro to log, have this parameters:
 * `message` : Is the message of the log, this doesn't have default value
 * `tags` : This is a new strategy for from logistro, you can set tags for your logs to improve the debugging. The default value is `None`
-* `stream_output` : You can set the stream output for the structured logs (for human logs, you must set this with the logger with logging strategies). The default value is `sys.stderr`.
 
 #### The avaible functions are:
 * `debug1()`
