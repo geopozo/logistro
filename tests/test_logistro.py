@@ -16,7 +16,7 @@ def test_customize_pytest_addoption(human):
     assert  human or not human
 
 
-def test_logs(caplog):
+def test_structured_logs(caplog):
     # Structured logs
     logistro.set_structured()
     assert logistro.custom_logging.arg_logging.human is False
@@ -32,7 +32,11 @@ def test_logs(caplog):
     logistro.error("Hello world, this is Logistro!")
     logistro.critical("Hello world, this is Logistro!")
 
+    for record in caplog.records:   #TODO: improve this assert
+        assert "Hello world, this is Logistro!" in record.message
 
+
+def test_human_logs(caplog):
     # Human logs
     logistro.set_human()
     assert logistro.custom_logging.arg_logging.human is True
@@ -48,5 +52,5 @@ def test_logs(caplog):
     logistro.critical("Hello world, this is Logistro!")
 
     for record in caplog.records:   #TODO: improve this assert
-        assert "Hello world, this is Logistro!" in record
+        assert "Hello world, this is Logistro!" in record.message
 
