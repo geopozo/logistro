@@ -45,6 +45,6 @@ def test_logs(caplog):
     logistro.error("Hello world, this is Logistro!")
     logistro.critical("Hello world, this is Logistro!")
 
-    for record in caplog.records:
+    for record in caplog.records:   #TODO: improve this assert
         assert "Hello world, this is Logistro!" in record
 
