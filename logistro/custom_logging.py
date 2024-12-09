@@ -213,6 +213,7 @@ def _print_structured(message, tags, level, package, file, module_function):
     levels = {
         "CRITICAL": 50,
         "ERROR": 40,
+        "EXCEPTION": 40,
         "WARNING": 30,
         "INFO": 20,
         "DEBUG1": 10,
