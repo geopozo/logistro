@@ -17,23 +17,31 @@ def test_customize_pytest_addoption(human):
 
 
 def test_logs(caplog):
+    # Structured logs
     logistro.set_structured()
     logistro.set_level(logistro.DEBUG2)
     logistro.debug2("Hello world, this is Logistro!")
     logistro.debug1("Hello world, this is Logistro!")
     logistro.info("Hello world, this is Logistro!")
     logistro.warning("Hello world, this is Logistro!")
-    logistro.exception("Hello world, this is Logistro!")
+    try:
+        raise ValueError("Exception")
+    except ValueError:
+        logistro.exception("Hello world, this is Logistro!")
     logistro.error("Hello world, this is Logistro!")
     logistro.critical("Hello world, this is Logistro!")
 
 
+    # Human logs
     logistro.set_human()
     logistro.debug2("Hello world, this is Logistro!")
     logistro.debug1("Hello world, this is Logistro!")
     logistro.info("Hello world, this is Logistro!")
     logistro.warning("Hello world, this is Logistro!")
-    logistro.exception("Hello world, this is Logistro!")
+    try:
+        raise ValueError("Exception")
+    except ValueError:
+        logistro.exception("Hello world, this is Logistro!")
     logistro.error("Hello world, this is Logistro!")
     logistro.critical("Hello world, this is Logistro!")
 
