@@ -19,6 +19,7 @@ def test_customize_pytest_addoption(human):
 def test_logs(caplog):
     # Structured logs
     logistro.set_structured()
+    assert logistro.custom_logging.arg_logging.human is False
     logistro.set_level(logistro.DEBUG2)
     logistro.debug2("Hello world, this is Logistro!")
     logistro.debug1("Hello world, this is Logistro!")
@@ -34,6 +35,7 @@ def test_logs(caplog):
 
     # Human logs
     logistro.set_human()
+    assert logistro.custom_logging.arg_logging.human is True
     logistro.debug2("Hello world, this is Logistro!")
     logistro.debug1("Hello world, this is Logistro!")
     logistro.info("Hello world, this is Logistro!")
