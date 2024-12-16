@@ -24,8 +24,21 @@ maintainers = [
 
 [dependency-groups]
 dev = [
+    "poethepoet>=0.31.1",
     "pytest>=8.3.4",
 ]
 
 [tool.pytest.ini_options]
 log_cli = true
+
+[tool.poe.tasks.test]
+cmd = "pytest -W error -n auto -rfE"
+help = "Run all tests quickly"
+
+[tool.poe.tasks.debug-test]
+cmd = "pytest -W error -vvvx -rA"
+help = "Run test by test, slowly, quitting after first error"
+
+[tool.poe.tasks.filter-test]
+cmd = "pytest -W error -vvvx -rA"
+help = "Run any/all tests one by one with basic settings: can include filename and -k filters"
