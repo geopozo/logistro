@@ -1,183 +1,63 @@
-import argparse
 import inspect
-import logging
 import json
-import sys
+import logging
 import time
 
+import logistro.args as args
 
-# new constant
+## New Constants and Globals
+
 DEBUG2 = 5
 
-# Create the logging
-basicConfig = logging.basicConfig
 logging.addLevelName(DEBUG2, "DEBUG2")
+human_formatter = logging.Formatter("%(asctime)s - %(message)s")
+structured_formatter = logging.Formatter("%(message)s")
 
-# Set logger
+## Set Defaults
+
 logger = logging.getLogger(__name__)
+logger.info(f"Default logger with name: {__name__}")
 
-# Create handler
-handler = logging.StreamHandler()
-
-
-# Split the list of strings
-def _verify_string(arg):
-    if arg.startswith("[") and arg.endswith("]"):
-        arg = arg.replace("[", "")
-        arg = arg.replace("]", "")
-        return arg.split(",")
-    else:
-        raise ValueError("You must use a list like '[a, b, c]'")
+default_handler = logging.StreamHandler()
+logger.addHandler(default_handler)
 
 
-# Customize parser
-def customize_parser(add_help=False):
-    parser_logging = argparse.ArgumentParser(add_help=add_help)
-    parser_logging.add_argument(
-        "--logistro_human",
-        action="store_true",
-        dest="human",
-        default=True,
-        help="Format the logs for humans",
-    )
-    parser_logging.add_argument(
-        "--logistro_structured",
-        action="store_false",
-        dest="human",
-        help="Format the logs as JSON",
-    )
-    parser_logging.add_argument(
-        "--include_tags",
-        type=_verify_string,
-        dest="included_tags",
-        default=None,
-        help="Tags to include the logs",
-    )
-    parser_logging.add_argument(
-        "--exclude_tags",
-        type=_verify_string,
-        dest="excluded_tags",
-        default=None,
-        help="Tags to exclude the logs",
-    )
-    return parser_logging
-
-
-# Customize parser in pytest_addoption()
-def customize_pytest_addoption(parser):
-    parser.addoption(
-        "--logistro_human",
-        action="store_true",
-        dest="human",
-        default=True,
-        help="Format the logs for humans",
-    )
-    parser.addoption(
-        "--logistro_structured",
-        action="store_false",
-        dest="human",
-        help="Format the logs as JSON",
-    )
-    parser.addoption(
-        "--include_tags",
-        type=_verify_string,
-        dest="included_tags",
-        default=None,
-        help="Tags to include the logs",
-    )
-    parser.addoption(
-        "--exclude_tags",
-        type=_verify_string,
-        dest="excluded_tags",
-        default=None,
-        help="Tags to exclude the logs",
-    )
-
-
-# This modify the formatter to use the human strategy
 def set_human():
-    global arg_logging, formatter
-
-    # Set True in human arg
-    arg_logging.human = True
-
-    # Set the formatter
-    formatter = logging.Formatter("%(asctime)s - %(message)s")
-    handler.setFormatter(formatter)  # Customize logger
+    default_handler.setFormatter(human_formatter)
 
 
-# This modify the formatter to use the structured strategy
 def set_structured():
-    global arg_logging, formatter
-
-    # Set False in human arg
-    arg_logging.human = False
-
-    # Set the formatter
-    formatter = logging.Formatter("%(message)s")
-    handler.setFormatter(formatter)  # Customize logger
+    default_handler.setFormatter(structured_formatter)
 
 
-# parser
-parser_logging = customize_parser(add_help=True)
-
-# Get the Format
-arg_logging, unknown_args = parser_logging.parse_known_intermixed_args(sys.argv)
-if "--logistro_human" in sys.argv and "--logistro_structured" in sys.argv:
-    raise ValueError(
-        "You must use just one flag: '--logistro_human' or '--logistro_structured'. You must not use both flags."
-    )
-if unknown_args:
-    # Just for the warning
-    temp_handler = logging.StreamHandler()
-
-    # Set the formatter
-    temp_formatter = logging.Formatter("%(levelname)s: %(message)s")
-    temp_handler.setFormatter(temp_formatter)
-    temp_logger = logging.getLogger("temp_logger")
-    temp_logger.addHandler(temp_handler)
-
-    # Print the warning
-    temp_logger.warning("Verify the arguments %s", unknown_args)
-
-    # Remove the handler
-    temp_logger.removeHandler(temp_handler)
-
-# Create Formatter
-if arg_logging.human:
-    formatter = logging.Formatter("%(asctime)s - %(message)s")  # TODO
-    handler.setFormatter(formatter)  # Customize logger
-
-# Add handler
-logger.addHandler(handler)
+if args.parsed.human:
+    set_human()
+else:
+    set_structured()
 
 # Avoid the log from the ancestor's logger
-logger.propagate = False
+# Why?
+# logger.propagate = False
 
 
 # Improve the name of the log
 def _get_context_info():
-    # In logistro
-    logistro_wrap_fn = (
-        inspect.currentframe().f_back.f_back
-    )  # This gets the frame of the wrap function
-    level = (
-        logistro_wrap_fn.f_code.co_name
-    )  # This gets the name of the wrap function: debug2, debug1, warning, etc
+    # currentframe() is this function
+    # once back is _log_message (a helper function)
+    # and back again is the logging function the dev calls
+    logistro_log_fn = inspect.currentframe().f_back.f_back
 
-    # In the module where logistro is used
-    module_fn_frame = logistro_wrap_fn.f_back  # This gets the frame of the module
-    module_obj = inspect.getmodule(module_fn_frame) or inspect.getmodule(
-        module_fn_frame.f_back
-    )  # This gets the module object with the info where logistro is used
-    package = module_obj.__package__
-    file = module_obj.__name__
+    # python module = python file
+    calling_frame = logistro_log_fn.f_back  # calling frame
+    module_obj = inspect.getmodule(calling_frame)  # calling module
+    calling_package = module_obj.__package__  # calling package
+    calling_file = module_obj.__name__  # literally file path
 
     # The function where logistro is used
-    module_function = (
-        module_fn_frame.f_code.co_name if hasattr(module_fn_frame, "f_code") else None
-    )  # This gets the name of the function
-    return level.upper(), package, file, module_function
+    calling_function = (
+        calling_frame.f_code.co_name if hasattr(calling_frame, "f_code") else None
+    )
+    return calling_package, calling_file, calling_function
 
 
 # This verify the strings of the tags
@@ -188,7 +68,7 @@ def _verify_tags(logistro_tags, tags, process):
     elif logistro_tags and not tags:
         return True
 
-    # Trasform lists to sets
+    # Transform lists to sets
     arg_tags = set(logistro_tags)
     user_tags = set(tags)
 
@@ -224,13 +104,15 @@ def _print_structured(message, tags, level, package, file, module_function):
 
 # Generalized wrap functions
 def _log_message(level_func, message, tags=None, *args, **kwargs):
-    if _verify_tags(arg_logging.included_tags, tags, "include") or _verify_tags(
-        arg_logging.excluded_tags, tags, "exclude"
+    if _verify_tags(args.parsed.included_tags, tags, "include") or _verify_tags(
+        args.parsed.excluded_tags,
+        tags,
+        "exclude",
     ):
         return
 
     level, package, file, module_function = _get_context_info()
-    if not arg_logging.human:
+    if not args.parsed.human:
         _print_structured(message, tags, level, package, file, module_function)
         return
 
@@ -244,11 +126,6 @@ def _log_message(level_func, message, tags=None, *args, **kwargs):
         logger.log(DEBUG2, logistro_log, *args, **kwargs)
     else:
         level_func(logistro_log, *args, **kwargs)
-
-
-# Wrap set level function
-def set_level(lvl):
-    logger.setLevel(lvl)
 
 
 # Custom debug with custom level
