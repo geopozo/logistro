@@ -22,8 +22,10 @@ maintainers = [
   {name = "Andrew Pikul", email = "ajpikul@gmail.com"},
 ]
 
-[project.optional-dependencies]
-dev = ["pytest"]
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]
 
 [tool.pytest.ini_options]
 log_cli = true
