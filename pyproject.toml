@@ -33,7 +33,7 @@ dev = [
 log_cli = true
 
 [tool.poe.tasks.test]
-cmd = "pytest -W error -n auto -rfE"
+cmd = "pytest -W error -n auto -v -rfE"
 help = "Run all tests quickly"
 
 [tool.poe.tasks.debug-test]
