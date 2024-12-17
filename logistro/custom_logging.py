@@ -39,7 +39,6 @@ human_pipe_formatter = logging.Formatter(":".join(output.values()))
 structured_pipe_formatter = logging.Formatter(":".join(output.values()))
 
 
-# no need to export
 class LogistroLogger(logging.getLoggerClass()):
     def debug1(self, msg, *args, **kwargs):
         super().log(logging.DEBUG, msg, *args, stacklevel=2, **kwargs)
