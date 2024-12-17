@@ -116,6 +116,7 @@ def getPipeLogger(
     default_level=logging.DEBUG,
     IFS="\n",
 ):
+    IFS = IFS.encode("utf-8")
     logger = logging.getLogger(name)
     _coerce_pipe_logger(logger, formatter)
     if parser:
@@ -135,7 +136,8 @@ def getPipeLogger(
                     1000,
                 )
                 if last_size == len(raw_buffer):
-                    logger.log(default_level, raw_buffer)
+                    if raw_buffer:
+                        logger.log(default_level, raw_buffer)
                     return
             except Exception:
                 while raw_buffer:

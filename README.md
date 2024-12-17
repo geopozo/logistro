@@ -15,6 +15,8 @@ With CLI flags:
 * `--logistro-human` (default)
 
 Or with functions: `logistro.set_structured()` and `logistro.set_human()`.
+NB: These functions can change a previously configured logger, but only
+if you recall `logistro.getLogger(...)` on that logger.
 
 It also adds `logger.debug2(...)`: more verbose then `logger.debug(...)`.
 

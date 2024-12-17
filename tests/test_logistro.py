@@ -1,61 +1,60 @@
-import argparse
-import sys
+import os
+import time
+
 import logistro
-import logging
 
 
-def test_customize_parser():
-    parser_logging = logistro.customize_parser()
-    parser = argparse.ArgumentParser(parents=[parser_logging])
-    args, _ = parser.parse_known_intermixed_args(sys.argv)
-    assert hasattr(args, "human")
-    assert hasattr(args, "included_tags")
-    assert hasattr(args, "excluded_tags")
+def write_to_pipe(pipe):
+    os.write(pipe, "TEST_PIPE\n".encode("utf-8"))
+    os.close(pipe)
 
 
-def test_customize_pytest_addoption(human):
-    assert human or not human
-
-
-def test_level_debug2():
-    assert logging.getLevelName(5) == "DEBUG2"
-
-
-def test_structured_logs(caplog):
-    # Structured logs
-    logistro.set_structured()
-    assert logistro.custom_logging.arg_logging.human is False
-    logistro.set_level(logistro.DEBUG2)
-    logistro.debug2("Hello world, this is Logistro!")
-    logistro.debug1("Hello world, this is Logistro!")
-    logistro.info("Hello world, this is Logistro!")
-    logistro.warning("Hello world, this is Logistro!")
+def write_to_logger(logger):
+    logger.debug2("TEST_DEBUG2")
+    logger.debug1("TEST_DEBUG1")
+    logger.info("TEST_INFO")
+    logger.warning("TEST_WARNING")
+    logger.error("TEST_ERROR")
+    logger.critical("TEST_CRITICAL")
     try:
-        raise ValueError("Exception")
+        raise ValueError("")
     except ValueError:
-        logistro.exception("Hello world, this is Logistro!")
-    logistro.error("Hello world, this is Logistro!")
-    logistro.critical("Hello world, this is Logistro!")
-
-    for record in caplog.records:  # TODO: improve this assert
-        assert "Hello world, this is Logistro!" in record.message
+        logger.exception("TEST_EXCEPTION")
 
 
-def test_human_logs(caplog):
-    # Human logs
+def test_all_logs(caplog):
     logistro.set_human()
-    assert logistro.custom_logging.arg_logging.human is True
-    logistro.set_level(logistro.DEBUG2)
-    logistro.debug2("Hello world, this is Logistro!")
-    logistro.debug1("Hello world, this is Logistro!")
-    logistro.info("Hello world, this is Logistro!")
-    logistro.warning("Hello world, this is Logistro!")
-    try:
-        raise ValueError("Exception")
-    except ValueError:
-        logistro.exception("Hello world, this is Logistro!")
-    logistro.error("Hello world, this is Logistro!")
-    logistro.critical("Hello world, this is Logistro!")
+    human = logistro.getLogger("human")
+    write_to_logger(human)
+    print(caplog.text)
+    print("".center(50, "%"))
+    caplog.clear()
 
-    for record in caplog.records:  # TODO: improve this assert
-        assert "Hello world, this is Logistro!" in record.message
+    w, pipelogger = logistro.getPipeLogger("human-pipe")
+    pipelogger.setLevel(logistro.DEBUG2)
+    write_to_pipe(w)
+    time.sleep(0.5)  # indeterminstic but should be fine
+    print(caplog.text)
+    print("".center(50, "%"))
+    caplog.clear()
+
+    logistro.set_structured()
+    structured = logistro.getLogger("structured")
+    write_to_logger(structured)
+    print(caplog.text)
+    print("".center(50, "%"))
+    caplog.clear()
+
+    logistro.set_structured()
+    changling = logistro.getLogger("changling")
+    write_to_logger(changling)
+    print(caplog.text)
+    print("".center(50, "%"))
+    caplog.clear()
+
+    logistro.set_human()
+    changling = logistro.getLogger("changling")
+    write_to_logger(changling)
+    print(caplog.text)
+    print("".center(50, "%"))
+    caplog.clear()

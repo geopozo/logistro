@@ -39,7 +39,7 @@ wheels = [
 
 [[package]]
 name = "logistro"
-version = "0.0.3"
+version = "0.0.3.post3+git.b134a9e6.dirty"
 source = { editable = "." }
 
 [package.dev-dependencies]
