@@ -81,7 +81,7 @@ repos:
       - id: markdownlint
         name: Markdownlint
         description: Run markdownlint on your Markdown files
-        entry: mdl --rules ~MD026
+        entry: mdl --style .markdown.rb
         language: ruby
         files: \.(md|mdown|markdown)$
   - repo: https://github.com/Yelp/detect-secrets

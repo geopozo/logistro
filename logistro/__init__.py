@@ -1,6 +1,7 @@
-# we are a shim for logging, so do it
+# the forbidden import
 from logging import *  # noqa
 
+from .custom_logging import betterConfig
 from .custom_logging import critical
 from .custom_logging import debug1
 from .custom_logging import DEBUG2
@@ -14,15 +15,16 @@ from .custom_logging import set_structured
 from .custom_logging import warning
 
 __all__ = [
-    "DEBUG2",
-    "set_human",
-    "set_structured",
-    "logger",
-    "debug1",
-    "debug2",
-    "info",
-    "warning",
-    "exception",
-    "error",
-    "critical",
+    betterConfig,  # config function
+    set_human,  # config function
+    set_structured,  # config function
+    logger,  # default/root logger
+    DEBUG2,  # level
+    debug1,  # helper
+    debug2,  # helper
+    info,  # helper
+    warning,  # helper
+    exception,  # helper
+    error,  # helper
+    critical,  # helper
 ]

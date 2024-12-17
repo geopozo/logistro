@@ -9,7 +9,7 @@ if "--logistro_human" in sys.argv and "--logistro_structured" in sys.argv:
 
 
 # Split the list of strings
-def _verify_string(arg):
+def _verify_tag_arg_string(arg):
     arg = arg.replace("[", "")
     arg = arg.replace("]", "")
     return arg.split(",")
@@ -35,14 +35,14 @@ def customize_parser(add_help=False):
     )
     parser_logging.add_argument(
         "--include_tags",
-        type=_verify_string,
+        type=_verify_tag_arg_string,
         dest="included_tags",
         default=None,
         help="Tags to include the logs",
     )
     parser_logging.add_argument(
         "--exclude_tags",
-        type=_verify_string,
+        type=_verify_tag_arg_string,
         dest="excluded_tags",
         default=None,
         help="Tags to exclude the logs",
@@ -67,14 +67,14 @@ def customize_pytest_addoption(parser):  # TODO why does this exist
     )
     parser.addoption(
         "--include_tags",
-        type=_verify_string,
+        type=_verify_tag_arg_string,
         dest="included_tags",
         default=None,
         help="Tags to include the logs",
     )
     parser.addoption(
         "--exclude_tags",
-        type=_verify_string,
+        type=_verify_tag_arg_string,
         dest="excluded_tags",
         default=None,
         help="Tags to exclude the logs",
