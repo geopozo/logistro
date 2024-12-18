@@ -82,6 +82,8 @@ def run_once(f):
 
 @run_once
 def betterConfig(**kwargs):
+    if "level" not in kwargs:
+        kwargs["level"] = args.parsed.log.upper()
     logging.basicConfig(**kwargs)
     coerce_logger(logging.getLogger())
 
