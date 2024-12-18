@@ -14,7 +14,7 @@ DEBUG2 = 5
 
 logging.addLevelName(DEBUG2, "DEBUG2")
 
-#: These are useless when logging external process output. See getPipeLogger()
+#: List of attributes to ignore in getPipeLogger()
 pipe_attr_blacklist = ["filename", "funcName", "threadName", "taskName"]
 
 # Our basic formatting list
