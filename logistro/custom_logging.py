@@ -9,11 +9,14 @@ import logistro.args as args
 
 ## New Constants and Globals
 
+#: A more verbose debug
 DEBUG2 = 5
 logging.addLevelName(DEBUG2, "DEBUG2")
 
-pipe_attr_blacklist = ["filename", "funcName", "threadName"]
+#: These are useless when logging external process output. See getPipeLogger()
+pipe_attr_blacklist = ["filename", "funcName", "threadName", "taskName"]
 
+# Our basic formatting list
 output = {
     "time": "%(asctime)s",
     "name": "%(name)s",
@@ -24,14 +27,19 @@ output = {
     "thread": "%(threadName)s",
     "message": "%(message)s",
 }
-# async taskName not supported below 3.12
+
+# A more readable, human readable string
+date_string = "%a, %d-%b %H:%M:%S"
+
+# async taskName not supported below 3.12, remove it
 if bool(sys.version_info[:3] < (3, 12)):
     del output["task"]
 
+# make human output a little more readable
 output_human = output.copy()
 output_human["func"] += "()"
 
-date_string = "%a, %d-%b %H:%M:%S"
+# generate format string
 human_formatter = logging.Formatter(
     ":".join(output_human.values()),
     datefmt=date_string,
@@ -39,6 +47,7 @@ human_formatter = logging.Formatter(
 structured_formatter = logging.Formatter(json.dumps(output))
 
 
+# We set this as the logging class just to add a debug1 and debug2 function
 class LogistroLogger(logging.getLoggerClass()):
     def debug1(self, msg, *args, **kwargs):
         super().log(logging.DEBUG, msg, *args, stacklevel=2, **kwargs)
@@ -51,7 +60,10 @@ logging.setLoggerClass(LogistroLogger)
 
 
 def set_human():
+    """set_human() is the same as passing --logistro-human (default)"""
     args.parsed.human = True
+
+    """set_structured() is the same as passing --logistro-structured"""
 
 
 def set_structured():
@@ -59,6 +71,15 @@ def set_structured():
 
 
 def coerce_logger(logger, formatter=None):
+    """coerce_logger() will loop through all of a logger's formatters and set
+    either the formatter specified, or default to human/structured based on flags
+    or if a set_* function was called
+
+    :param logger: The logger to coerce
+    :param formatter: The logging.Formatter() objecto use- defaults to
+        human_formatter or structured_formatter
+
+    """
     if not formatter:
         if args.parsed.human:
             formatter = human_formatter
@@ -80,6 +101,12 @@ def run_once(f):
 
 @run_once
 def betterConfig(**kwargs):
+    """betterConfig is a wrapper over logging.basicConfig which
+    provides our defaults (level set by --logistro-level and formatter
+    set to human/structured. Currently, it will overwrite any format
+    or datefmt arguments passed. It is only ever run once.
+
+    """
     if "level" not in kwargs:
         kwargs["level"] = args.parsed.log.upper()
     logging.basicConfig(**kwargs)
@@ -87,6 +114,8 @@ def betterConfig(**kwargs):
 
 
 def getLogger(name=None):
+    """getLogger() is a simple wrapper for logging.getLogger()
+    which calls betterConfig() first."""
     betterConfig()
     logger = logging.getLogger(name)
     return logger
@@ -113,6 +142,24 @@ def getPipeLogger(
     default_level=logging.DEBUG,
     IFS="\n",
 ):
+    """getPipeLogger() is a special getLogger which returns a pipe and logger.
+    It spins a separate thread that listens on the pipe and outputs everything
+    it reads to the logger named. It is used, for example, to redirect Popen()
+    stderr to the logs. You should close the pipe `os.close(pipe)` to be sure
+    when exiting your program- in case the other side hangs or freezes.
+    :param name: the name of the logger (ie logging.getLogger(name))
+    :param parser: an optional function which accepts a LogRecord (see logging
+        docs) as well as a dictionary of already stripped values.
+        The signature of parser should be: fn(record, old). It functions like
+        a logging.Filter, and can be used to parse the other processes output
+        if it's structured. The argument `old` is a dictionary of metadata
+        that we strip from the log record due to irrelevancy, see the
+        pipe_attr_blacklist list.
+    :param default_level: the default level to pipe these logs to. Can be modified
+        with the parser as described above.
+    :param IFS: (Internal Field Separate) The character used to delimit between
+        process output, defaults to "\n".
+    """
     IFS = IFS.encode("utf-8")
     logger = getLogger(name)
     logger.addFilter(PipeLoggerFilter(parser))
