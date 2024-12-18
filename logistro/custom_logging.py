@@ -12,11 +12,13 @@ import logistro.args as args
 DEBUG2 = 5
 logging.addLevelName(DEBUG2, "DEBUG2")
 
+pipe_attr_blacklist = ["filename", "funcName", "threadName"]
+
 output = {
     "time": "%(asctime)s",
     "name": "%(name)s",
     "level": "%(levelname)s",
-    "module": "%(module)s",
+    "file": "%(filename)s",
     "func": "%(funcName)s",
     "task": "%(taskName)s",
     "thread": "%(threadName)s",
@@ -68,16 +70,6 @@ def _coerce_logger(logger, formatter=None):
         handler.setFormatter(formatter)
 
 
-def _coerce_pipe_logger(logger, formatter=None):
-    if not formatter:
-        if args.parsed.human:
-            formatter = human_pipe_formatter
-        else:
-            formatter = structured_pipe_formatter
-    for handler in logger.handlers:
-        handler.setFormatter(formatter)
-
-
 def run_once(f):
     def wrapper(*args, **kwargs):
         if not wrapper.has_run:
@@ -97,7 +89,6 @@ def betterConfig(**kwargs):
 def getLogger(name):
     betterConfig()
     logger = logging.getLogger(name)
-    _coerce_logger(logger)
     return logger
 
 
@@ -106,21 +97,25 @@ class PipeLoggerFilter:
         self._parser = parser
 
     def filter(self, record):
-        return self._parser(record)
+        old_info = {}
+        for attr in pipe_attr_blacklist:
+            if hasattr(record, attr):
+                old_info[attr] = getattr(record, attr)
+                setattr(record, attr, "")
+        if self._parser:
+            return self._parser(record, old_info)
+        return True
 
 
 def getPipeLogger(
     name,
-    formatter=None,
     parser=None,
     default_level=logging.DEBUG,
     IFS="\n",
 ):
     IFS = IFS.encode("utf-8")
-    logger = logging.getLogger(name)
-    _coerce_pipe_logger(logger, formatter)
-    if parser:
-        logger.addFilter(PipeLoggerFilter(parser))
+    logger = getLogger(name)
+    logger.addFilter(PipeLoggerFilter(parser))
     r, w = os.pipe()
 
     # needs r, logger, and default_level
@@ -155,6 +150,10 @@ def getPipeLogger(
                     break
                 logger.log(default_level, line)
 
-    pipeReader = Thread(target=readPipe, name=name, args=(r, logger, default_level))
+    pipeReader = Thread(
+        target=readPipe,
+        name=name + "Thread",
+        args=(r, logger, default_level),
+    )
     pipeReader.start()
     return w, logger
