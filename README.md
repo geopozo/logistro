@@ -16,7 +16,7 @@ With CLI flags:
 
 Or with functions: `logistro.set_structured()` and `logistro.set_human()`.
 Generally, they can be called once before anything else happens in logging.
-See NOTE below for why python's `logging` is so complicated.
+(See note below about changing mid-program).
 
 It also adds `logger.debug2(...)`: more verbose then `logger.debug(...)`.
 
@@ -45,28 +45,14 @@ logger.critical('hey, this still works! its just more informative')
 logger.exception('hey, this still works! its just more informative')
 ```
 
+## Changing Logger Formatter Mid-Execution
+
+If you don't have any weird setup, and you need to change the logging style
+mid-execution, try calling an above function like `set_structured()`
+and then `logistro.coerce_logger(logistro.getLogger())`. See the file
+*TECH_NOTE.md* for an intro into the complexities.
 Like logging, If using from multiple threads, call `betterConfig()` early.
 
-## Technical Note
-
-Python's `logging` is over-engineered and not quite good enough:
-
-### Background
-
-`Loggers` exist in a tree structure, hierarchy defined by the name.
-There is a root logger that you cannot change.
-`Loggers` have `Handlers`, `Handlers` have `Formatters`. When you call a logging
-function on a `Logger`, it searches up the tree for all parent handlers.
-In simple usage, usually only the root logger has a handler.
-
-### Problem
-
-Changing the format mid-program means finding all the (relevant?) handlers
-in the tree. `pytest` for example attaches other handlers so it can capture
-logging. We set our format on all of, and just, the root logger's handlers.
-We strip useless data from the process logger by using a filter.
-I don't want to shotgun handlers for a mid-execution change.
-If you are customizing things this much, you can use our formatters directly.
 
 * tests
 * argument flag levels

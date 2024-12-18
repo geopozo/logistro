@@ -60,7 +60,7 @@ def set_structured():
     args.parsed.human = False
 
 
-def _coerce_logger(logger, formatter=None):
+def coerce_logger(logger, formatter=None):
     if not formatter:
         if args.parsed.human:
             formatter = human_formatter
@@ -83,10 +83,10 @@ def run_once(f):
 @run_once
 def betterConfig(**kwargs):
     logging.basicConfig(**kwargs)
-    _coerce_logger(logging.getLogger())
+    coerce_logger(logging.getLogger())
 
 
-def getLogger(name):
+def getLogger(name=None):
     betterConfig()
     logger = logging.getLogger(name)
     return logger
@@ -132,23 +132,23 @@ def getPipeLogger(
                 )
                 if last_size == len(raw_buffer):
                     if raw_buffer:
-                        logger.log(default_level, raw_buffer)
+                        logger.log(default_level, raw_buffer.decode())
                     return
             except Exception:
                 while raw_buffer:
                     line, m, raw_buffer = raw_buffer.partition(IFS)
                     if not m:
                         if line:
-                            logger.log(default_level, line)
+                            logger.log(default_level, line.decode())
                         break
-                    logger.log(default_level, line)
+                    logger.log(default_level, line.decode())
                 return
             while raw_buffer:
                 line, m, raw_buffer = raw_buffer.partition(IFS)
                 if not m:
                     raw_buffer = line
                     break
-                logger.log(default_level, line)
+                logger.log(default_level, line.decode())
 
     pipeReader = Thread(
         target=readPipe,
