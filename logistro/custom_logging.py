@@ -24,21 +24,19 @@ output = {
     "thread": "%(threadName)s",
     "message": "%(message)s",
 }
-
 # async taskName not supported below 3.12
 if bool(sys.version_info[:3] < (3, 12)):
     del output["task"]
 
-human_formatter = logging.Formatter(":".join(output.values()))
+output_human = output.copy()
+output_human["func"] += "()"
+
+date_string = "%a, %d-%b %H:%M:%S"
+human_formatter = logging.Formatter(
+    ":".join(output_human.values()),
+    datefmt=date_string,
+)
 structured_formatter = logging.Formatter(json.dumps(output))
-
-pipe_output = output.copy()
-for s in ["time", "module", "func", "task", "thread"]:
-    if s in pipe_output:
-        del pipe_output[s]
-
-human_pipe_formatter = logging.Formatter(":".join(output.values()))
-structured_pipe_formatter = logging.Formatter(":".join(output.values()))
 
 
 class LogistroLogger(logging.getLoggerClass()):
