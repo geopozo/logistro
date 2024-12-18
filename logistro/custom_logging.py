@@ -9,15 +9,16 @@ import logistro.args as args
 
 ## New Constants and Globals
 
-#: A more verbose debug
+#: A more verbose version of logging.DEBUG
 DEBUG2 = 5
+
 logging.addLevelName(DEBUG2, "DEBUG2")
 
 #: These are useless when logging external process output. See getPipeLogger()
 pipe_attr_blacklist = ["filename", "funcName", "threadName", "taskName"]
 
 # Our basic formatting list
-output = {
+_output = {
     "time": "%(asctime)s",
     "name": "%(name)s",
     "level": "%(levelname)s",
@@ -29,26 +30,26 @@ output = {
 }
 
 # A more readable, human readable string
-date_string = "%a, %d-%b %H:%M:%S"
+_date_string = "%a, %d-%b %H:%M:%S"
 
 # async taskName not supported below 3.12, remove it
 if bool(sys.version_info[:3] < (3, 12)):
-    del output["task"]
+    del _output["task"]
 
 # make human output a little more readable
-output_human = output.copy()
-output_human["func"] += "()"
+_output_human = _output.copy()
+_output_human["func"] += "()"
 
 # generate format string
 human_formatter = logging.Formatter(
-    ":".join(output_human.values()),
-    datefmt=date_string,
+    ":".join(_output_human.values()),
+    datefmt=_date_string,
 )
-structured_formatter = logging.Formatter(json.dumps(output))
+structured_formatter = logging.Formatter(json.dumps(_output))
 
 
 # We set this as the logging class just to add a debug1 and debug2 function
-class LogistroLogger(logging.getLoggerClass()):
+class _LogistroLogger(logging.getLoggerClass()):
     def debug1(self, msg, *args, **kwargs):
         super().log(logging.DEBUG, msg, *args, stacklevel=2, **kwargs)
 
@@ -56,7 +57,7 @@ class LogistroLogger(logging.getLoggerClass()):
         super().log(DEBUG2, msg, *args, stacklevel=2, **kwargs)
 
 
-logging.setLoggerClass(LogistroLogger)
+logging.setLoggerClass(_LogistroLogger)
 
 
 def set_human():
@@ -89,17 +90,17 @@ def coerce_logger(logger, formatter=None):
         handler.setFormatter(formatter)
 
 
-def run_once(f):
-    def wrapper(*args, **kwargs):
-        if not wrapper.has_run:
-            wrapper.has_run = True
+def _run_once(f):
+    def betterConfig(*args, **kwargs):
+        if not betterConfig.has_run:
+            betterConfig.has_run = True
             return f(*args, **kwargs)
 
-    wrapper.has_run = False
-    return wrapper
+    betterConfig.has_run = False
+    return betterConfig
 
 
-@run_once
+@_run_once
 def betterConfig(**kwargs):
     """betterConfig is a wrapper over logging.basicConfig which
     provides our defaults (level set by --logistro-level and formatter
@@ -121,7 +122,7 @@ def getLogger(name=None):
     return logger
 
 
-class PipeLoggerFilter:
+class _PipeLoggerFilter:
     def __init__(self, parser):
         self._parser = parser
 
@@ -162,7 +163,7 @@ def getPipeLogger(
     """
     IFS = IFS.encode("utf-8")
     logger = getLogger(name)
-    logger.addFilter(PipeLoggerFilter(parser))
+    logger.addFilter(_PipeLoggerFilter(parser))
     r, w = os.pipe()
 
     # needs r, logger, and default_level
