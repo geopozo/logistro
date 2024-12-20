@@ -35,12 +35,12 @@ def test_human_logs(caplog):
     logistro.set_human()
     human = logistro.getLogger("human")
     human.setLevel(logistro.DEBUG2)
-    write_to_logger(caplog, human, logistro.DEBUG2, "d2-message", True)
+    write_to_logger(caplog, human, logistro.DEBUG2, "d2-message", human=True)
 
     w, pipelogger = logistro.getPipeLogger("pipe1")
     pipelogger.setLevel(logistro.DEBUG2)
     try:
-        write_to_pipe(caplog, w, "d2-message", True)
+        write_to_pipe(caplog, w, "d2-message", human=True)
     finally:
         os.close(w)
 
@@ -50,11 +50,11 @@ def test_structured_logs(caplog):
     logistro.coerce_logger(logistro.getLogger())
     structured = logistro.getLogger("structured")
     structured.setLevel(logistro.DEBUG2)
-    # write_to_logger(caplog, structured, logistro.DEBUG2, "d2-message", False)
+    write_to_logger(caplog, structured, logistro.DEBUG2, "d2-message", human=False)
 
     w, pipelogger = logistro.getPipeLogger("pipe2")
     pipelogger.setLevel(logistro.DEBUG2)
     try:
-        write_to_pipe(caplog, w, "d2-message", False)
+        write_to_pipe(caplog, w, "d2-message", human=False)
     finally:
         os.close(w)

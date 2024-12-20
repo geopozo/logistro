@@ -1,21 +1,41 @@
-from .custom_logging import betterConfig
-from .custom_logging import coerce_logger
-from .custom_logging import DEBUG2
-from .custom_logging import getLogger
-from .custom_logging import getPipeLogger
-from .custom_logging import human_formatter
-from .custom_logging import set_human
-from .custom_logging import set_structured
-from .custom_logging import structured_formatter
+"""
+Logistro wraps `logging` for added defaults and subprocess logging.
 
-__all__ = [
+Typical usage:
+
+    import logistro
+    logger = logistro.getLogger(__name__)
+    logger.debug2("This will be printed more informatively")
+
+    # Advanced
+    pipe, logger = logistro.getPipeLogger(__name__)
+    # Pipe all stderr to our logger
+    subprocess.Popen(process_name, stderr=pipe)
+
+    subprocess.wait()
+    os.close(pipe)
+"""
+
+from ._api import (
     DEBUG2,
     betterConfig,
+    coerce_logger,
     getLogger,
     getPipeLogger,
+    human_formatter,
     set_human,
     set_structured,
-    human_formatter,
     structured_formatter,
-    coerce_logger,
+)
+
+__all__ = [
+    "DEBUG2",
+    "betterConfig",
+    "coerce_logger",
+    "getLogger",
+    "getPipeLogger",
+    "human_formatter",
+    "set_human",
+    "set_structured",
+    "structured_formatter",
 ]

@@ -12,7 +12,7 @@ enabled = true
 name = "logistro"
 description = "Simple wrapper over logging for a couple basic features"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["version"]
 authors = [
   {name = "Andrew Pikul", email="ajpikul@gmail.com"},
@@ -28,6 +28,33 @@ dev = [
     "pytest-xdist",
     "pytest>=8.3.4",
 ]
+docs = [
+    "mkapi>=1.0.14",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.5.49",
+]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+          "ANN", # no types
+					"EM", # allow strings in raise(), despite python being ugly about it
+					"TRY003", # allow long error messages inside raise()
+					"D203", # No blank before class docstring (D211 = require blank line)
+					"D212", # Commit message style docstring is D213, ignore D212
+					"COM812", # manual says linter rule conflicts with formatter
+					"ISC001",  # manual says litner rule conflicts with formatter
+          ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+              "D", # ignore docstring errors
+              "S101", # allow assert
+              "INP001", # no need for __init__ in test directories
+            ]
+
+[tool.uv.sources]
+mkapi = { path = "../mkapi", editable = true }
 
 [tool.pytest.ini_options]
 log_cli = true

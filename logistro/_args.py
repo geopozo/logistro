@@ -4,7 +4,7 @@ import sys
 # Verify arg sanity
 if "--logistro-human" in sys.argv and "--logistro-structured" in sys.argv:
     raise ValueError(
-        "Using '--logistro-human' or '--logistro-structured' simultaneously is not supported.",
+        "Choose either '--logistro-human' or '--logistro-structured'.",
     )
 
 parser = argparse.ArgumentParser(
