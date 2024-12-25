@@ -1,28 +1,38 @@
 ---
 ### Site metadata ###
 
-site_name: Logistro
-site_description: Logistro is a simple wrapper for logging
-site_url: https://github.com/geopozo/logistro
-repo_url: https://github.com/geopozo/logistro
-repo_name: geopozo/logistro
-edit_uri: edit/main/docs/
+site_name: logistro
+repo_name: github
 
 
 ### Build settings ###
 
 docs_dir: 'docs/'
 nav:
-  - Home: 'README.md'
-  - $api/logistro.***
+  - Readme: >-
+      {
+        "dest": "README.md",
+        "src": "../README.md",
+        "replace": {"src='docs/": "src='"}
+      }
+  - Note: >-
+      {
+        "dest": "TECH_NOTE.md",
+        "src": "../TECH_NOTE.md",
+        "replace": {"src='docs/": "src='"}
+      }
+  - API: >-
+        {
+          "api": "logistro",
+          "tree": "imports"
+        }
+      #  - APIPKG: >-
+      #{
+      #  "api": "logistro",
+      #  "tree": "packages"
+      #}
 theme:
   name: material
-  features:
-    - navigation.expand
-    - navigation.indexes
-    - navigation.sections
-extra_css:
-  - style.css
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
@@ -32,6 +42,6 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
 plugins:
-  - mkapi:
-      enabled: true
-      debug: true
+  - quimeta
+  - quicopy
+  - quiapi

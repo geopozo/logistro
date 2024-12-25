@@ -11,9 +11,9 @@ enabled = true
 [project]
 name = "logistro"
 description = "Simple wrapper over logging for a couple basic features"
-readme = "README.md"
-requires-python = ">=3.10"
 dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.11"
 authors = [
   {name = "Andrew Pikul", email="ajpikul@gmail.com"},
   {name = "Neyberson Atencio", email="neyberatencio@gmail.com"}
@@ -22,6 +22,10 @@ maintainers = [
   {name = "Andrew Pikul", email = "ajpikul@gmail.com"},
 ]
 
+[project.urls]
+Homepage = "https://github.com/geopozo/logistro"
+Repository = "https://github.com/geopozo/logistro"
+
 [dependency-groups]
 dev = [
     "poethepoet>=0.31.1",
@@ -29,10 +33,13 @@ dev = [
     "pytest>=8.3.4",
 ]
 docs = [
-    "mkapi>=1.0.14",
+    "mkquixote @ git+ssh://git@github.com/geopozo/mkquixote",
     "mkdocs>=1.6.1",
     "mkdocs-material>=9.5.49",
 ]
+
+[tool.uv.sources]
+mkquixote = { path = "../mkquixote", editable = true }
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -43,7 +50,14 @@ ignore = [
 					"D203", # No blank before class docstring (D211 = require blank line)
 					"D212", # Commit message style docstring is D213, ignore D212
 					"COM812", # manual says linter rule conflicts with formatter
-					"ISC001",  # manual says litner rule conflicts with formatter
+					"ISC001", # manual says litner rule conflicts with formatter
+          "RET504", # Allow else if unnecessary because more readable
+          "RET505", # Allow else if unnecessary because more readable
+          "RET506", # Allow else if unnecessary because more readable
+          "RET507", # Allow else if unnecessary because more readable
+          "RET508", # Allow else if unnecessary because more readable
+          "RUF012", # We don't do typing, so no typing
+          "SIM105", # Too opionated (try-except-pass)
           ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -52,9 +66,6 @@ ignore = [
               "S101", # allow assert
               "INP001", # no need for __init__ in test directories
             ]
-
-[tool.uv.sources]
-mkapi = { path = "../mkapi", editable = true }
 
 [tool.pytest.ini_options]
 log_cli = true

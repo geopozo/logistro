@@ -1,6 +1,0 @@
-.qmkapi-item-list li p {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  width: 90%;
-}
