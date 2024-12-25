@@ -1,0 +1,23 @@
+.quixote-small_note {
+  font-family: "Roboto Mono";
+  float: right;
+  margin-right: 30px;
+  letter-spacing: -.01em;
+  font-size: .8em;
+}
+
+dl.class {
+  padding-left: 1em !important;
+}
+dd {
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+small {
+  font-size: smaller;
+}
+
+h5 {
+  text-transform: none !important;
+}

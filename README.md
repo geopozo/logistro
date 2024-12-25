@@ -1,16 +1,63 @@
-# logistro (low-hee-stro)
+# **logistro (low-hee-stro)**
 
-Logistro is a VERY simple (100 lines?) wrapper for python's logging to include boilerplate:
+`logistro` is an extremely light addition to `logging`, providing sensible defaults.
 
-## Functions added
+It also includes `getPipeLogger()` which can be passed to `Popen()` so that its
+`stderr` is piped to the already thread-safe `logging` library.
 
-`debug1()`
-`debug2()`
-`info()`
-`warn()`
-`error()`
-`crticial()`
+## Quickstart
 
-* Has a human-readable and structured logging mode.
-* Allows tags that can be filtered by.
-* Includes more information in the log (configurable)
+```python
+import logistro
+
+logger = logistro.getLogger(__name__)
+
+logger.debug2(...) # new!
+logger.debug(...) # or debug1()
+logger.info(...)
+logger.warning(...)
+logger.error(...)
+logger.critical(...)
+logger.exception(...) # always inside except:
+
+# For subprocesses:
+
+pipe, logger = logistro.getPipeLogger(__name__+"-subprocess")
+subprocess.Popen(cli_command, stderr=pipe)
+os.close(pipe) # eventually
+```
+
+## CLI Flags
+
+* `--logistro-level DEBUG|DEBUG2|INFO|WARNING|ERROR|CRITICAL`
+* `--logistro-human` (default)
+* `--logistro-structured` which outputs JSON
+
+### Functions:
+
+* `logistro.set_structured()`
+* `logistro.set_human()`
+
+*Generally, they must be called before any other logging call (See note below).*
+
+## Additionally
+
+
+`logistro.betterConfig(...)` applies our formats and levels. It accepts the same
+arguments as `logging.basicConfig(...)` except `format=`, which it ignores.
+**It is better to call this early in a multithread program.**
+
+`logistro.getLogger(...)` will ensure `betterConfig()`.
+
+You can use our two formatters manually instead:
+
+* `human_formatter`
+* `structured_formatter`
+
+
+## Changing Logger Formatter Mid-Execution
+
+With a typical setup, calling `set_structured()` or `set_human()`
+and then `logistro.coerce_logger(logistro.getLogger())` will change the format.
+
+See [the tech note](TECH_NOTE.md) for an intro into the complexities of `logging`.
