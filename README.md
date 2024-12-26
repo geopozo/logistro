@@ -33,7 +33,7 @@ os.close(pipe) # eventually
 * `--logistro-human` (default)
 * `--logistro-structured` which outputs JSON
 
-### Functions:
+### Functions
 
 * `logistro.set_structured()`
 * `logistro.set_human()`
