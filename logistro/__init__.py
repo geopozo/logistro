@@ -14,6 +14,7 @@ pipe, logger = logistro.getPipeLogger(__name__)
 # Pipe all stderr to our logger
 subprocess.Popen(process_name, stderr=pipe)
 
+# Eventually close the pipe in case other process doesn't
 subprocess.wait()
 os.close(pipe)
 ```
