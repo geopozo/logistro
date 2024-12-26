@@ -22,7 +22,7 @@
     
     
       
-        <title>API - logistro</title>
+        <title>Reference - logistro</title>
       
     
     
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API
+              Reference
             
           </span>
         </div>
@@ -231,15 +231,156 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    API
+    Reference
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#globals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Globals
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Globals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logistro-DEBUG2" class="md-nav__link">
+    <span class="md-ellipsis">
+      DEBUG2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-human_formatter" class="md-nav__link">
+    <span class="md-ellipsis">
+      human_formatter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-structured_formatter" class="md-nav__link">
+    <span class="md-ellipsis">
+      structured_formatter
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Functions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logistro-betterConfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      betterConfig
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-coerce_logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      coerce_logger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-getLogger" class="md-nav__link">
+    <span class="md-ellipsis">
+      getLogger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-getPipeLogger" class="md-nav__link">
+    <span class="md-ellipsis">
+      getPipeLogger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-set_human" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_human
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-set_structured" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_structured
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -265,6 +406,125 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#globals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Globals
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Globals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logistro-DEBUG2" class="md-nav__link">
+    <span class="md-ellipsis">
+      DEBUG2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-human_formatter" class="md-nav__link">
+    <span class="md-ellipsis">
+      human_formatter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-structured_formatter" class="md-nav__link">
+    <span class="md-ellipsis">
+      structured_formatter
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Functions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logistro-betterConfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      betterConfig
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-coerce_logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      coerce_logger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-getLogger" class="md-nav__link">
+    <span class="md-ellipsis">
+      getLogger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-getPipeLogger" class="md-nav__link">
+    <span class="md-ellipsis">
+      getPipeLogger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-set_human" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_human
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistro-set_structured" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_structured
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -284,19 +544,23 @@ full pypath: logistro
 <h1 id="package-logistro">package: logistro</h1>
 <p>Logistro wraps <code>logging</code> for added defaults and subprocess logging.</p>
 <p>Typical usage:</p>
-<p>import logistro
-logger = logistro.getLogger(<strong>name</strong>)
-logger.debug2("This will be printed more informatively")</p>
-<h1 id="advanced">Advanced</h1>
-<p>pipe, logger = logistro.getPipeLogger(<strong>name</strong>)</p>
-<h1 id="pipe-all-stderr-to-our-logger">Pipe all stderr to our logger</h1>
-<p>subprocess.Popen(process_name, stderr=pipe)</p>
-<p>subprocess.wait()
-os.close(pipe)</p>
-<h2 id="attributes">Attributes</h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">logistro</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">logger</span> <span class="o">=</span> <span class="n">logistro</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">logger</span><span class="o">.</span><span class="n">debug2</span><span class="p">(</span><span class="s2">&quot;This will be printed more informatively&quot;</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Advanced</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">pipe</span><span class="p">,</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">logistro</span><span class="o">.</span><span class="n">getPipeLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Pipe all stderr to our logger</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">process_name</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">pipe</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Eventually close the pipe in case other process doesn&#39;t</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">subprocess</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">pipe</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="globals">Globals</h2>
 <h5 id="logistro-DEBUG2">DEBUG2 <small>- A more verbose version of logging.DEBUG </small></h5>
-<h5 id="logistro-human_formatter">human_formatter <small>-  </small></h5>
-<h5 id="logistro-structured_formatter">structured_formatter <small>-  </small></h5>
+<h5 id="logistro-human_formatter">human_formatter <small>- A <code>logging.Formatter()</code> to print output nicely. </small></h5>
+<h5 id="logistro-structured_formatter">structured_formatter <small>- A <code>logging.Formatter()</code> to print output as JSON for machine consumption. </small></h5>
 <h2 id="functions">Functions</h2>
 <h5 id="logistro-betterConfig">betterConfig(kwargs)</h5>
 <dd>

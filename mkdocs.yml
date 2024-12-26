@@ -21,16 +21,11 @@ nav:
         "src": "../TECH_NOTE.md",
         "replace": {"src='docs/": "src='"}
       }
-  - API: >-
-        {
-          "api": "logistro",
-          "tree": "imports"
-        }
-      #  - APIPKG: >-
-      #{
-      #  "api": "logistro",
-      #  "tree": "packages"
-      #}
+  - Reference: >-
+      {
+        "api": "logistro"
+      }
+
 theme:
   name: material
 markdown_extensions:
