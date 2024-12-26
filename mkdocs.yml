@@ -21,7 +21,8 @@ nav:
         "src": "../TECH_NOTE.md",
         "replace": {"src='docs/": "src='"}
       }
-  - API: >-
+  - API:
+      - >-
         {
           "api": "logistro",
           "tree": "imports"
