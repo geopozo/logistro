@@ -10,7 +10,7 @@ from logistro import _args as cli_args
 ## New Constants and Globals
 
 DEBUG2 = 5
-"""A more verbose version of logging.DEBUG"""
+"""A more verbose version of `logging.DEBUG`"""
 
 logging.addLevelName(DEBUG2, "DEBUG2")
 

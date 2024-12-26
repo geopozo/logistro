@@ -1,4 +1,4 @@
-# **logistro (low-hee-stro)**
+# **logistro (lo-hī-stro)**
 
 `logistro` is an extremely light addition to `logging`, providing sensible defaults.
 
