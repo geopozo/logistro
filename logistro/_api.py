@@ -45,7 +45,10 @@ human_formatter = logging.Formatter(
     ":".join(_output_human.values()),
     datefmt=_date_string,
 )
+"""A `logging.Formatter()` to print output nicely."""
+
 structured_formatter = logging.Formatter(json.dumps(_output))
+"""A `logging.Formatter()` to print output as JSON for machine consumption."""
 
 
 # We set this as the logging class just to add a debug1 and debug2 function
