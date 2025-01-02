@@ -32,11 +32,17 @@ dev = [
     "pytest-xdist",
     "pytest>=8.3.4",
 ]
-docs = [
+
+# uv doens't allow dependency groups to have separate python requirements
+# it resolves everything all at once
+# this group we need to require higher python
+# and only resolve if explicitly asked for
+
+#docs = [
 #    "mkquixote @ git+ssh://git@github.com/geopozo/mkquixote",
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.5.49",
-]
+#    "mkdocs>=1.6.1",
+#    "mkdocs-material>=9.5.49",
+#]
 
 [tool.uv.sources]
 mkquixote = { path = "../mkquixote", editable = true }
