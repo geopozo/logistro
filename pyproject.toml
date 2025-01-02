@@ -48,12 +48,12 @@ dev = [
 select = ["ALL"]
 ignore = [
           "ANN", # no types
-					"EM", # allow strings in raise(), despite python being ugly about it
-					"TRY003", # allow long error messages inside raise()
-					"D203", # No blank before class docstring (D211 = require blank line)
-					"D212", # Commit message style docstring is D213, ignore D212
-					"COM812", # manual says linter rule conflicts with formatter
-					"ISC001", # manual says litner rule conflicts with formatter
+          "EM", # allow strings in raise(), despite python being ugly about it
+          "TRY003", # allow long error messages inside raise()
+          "D203", # No blank before class docstring (D211 = require blank line)
+          "D212", # Commit message style docstring is D213, ignore D212
+          "COM812", # manual says linter rule conflicts with formatter
+          "ISC001", # manual says litner rule conflicts with formatter
           "RET504", # Allow else if unnecessary because more readable
           "RET505", # Allow else if unnecessary because more readable
           "RET506", # Allow else if unnecessary because more readable
