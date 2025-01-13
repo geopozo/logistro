@@ -31,6 +31,7 @@ dev = [
     "poethepoet>=0.31.1",
     "pytest-xdist",
     "pytest>=8.3.4",
+    "mypy>=1.14.1",
 ]
 
 # uv doens't allow dependency groups to have separate python requirements
