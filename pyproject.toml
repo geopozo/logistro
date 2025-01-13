@@ -61,6 +61,9 @@ ignore = [
           "RET508", # Allow else if unnecessary because more readable
           "RUF012", # We don't do typing, so no typing
           "SIM105", # Too opionated (try-except-pass)
+          "PT003", # scope="function" implied but I like readability
+          "G004", # I like fstrings in my log
+
           ]
 
 [tool.ruff.lint.per-file-ignores]
