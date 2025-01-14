@@ -92,17 +92,6 @@ def coerce_logger(logger, formatter=None):
         handler.setFormatter(formatter)
 
 
-def _run_once(f):
-    def betterConfig(*args, **kwargs):  # noqa: N802 camel-case like logging
-        if not betterConfig.has_run:
-            betterConfig.has_run = True
-            f(*args, **kwargs)
-
-    betterConfig.has_run = False
-    return betterConfig
-
-
-@_run_once
 def betterConfig(**kwargs):  # noqa: N802 camel-case like logging
     """
     Call `logging.basicConfig()` with our defaults.
@@ -114,6 +103,7 @@ def betterConfig(**kwargs):  # noqa: N802 camel-case like logging
         kwargs["level"] = cli_args.parsed.log.upper()
     logging.basicConfig(**kwargs)
     coerce_logger(logging.getLogger())
+    betterConfig.func_code = (lambda: None).func_code  # function won't run after this
 
 
 def getLogger(name=None):  # noqa: N802 camel-case like logging
