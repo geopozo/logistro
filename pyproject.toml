@@ -13,7 +13,7 @@ name = "logistro"
 description = "Simple wrapper over logging for a couple basic features"
 dynamic = ["version"]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 authors = [
   {name = "Andrew Pikul", email="ajpikul@gmail.com"},
   {name = "Neyberson Atencio", email="neyberatencio@gmail.com"}
@@ -39,11 +39,11 @@ dev = [
 # this group we need to require higher python
 # and only resolve if explicitly asked for
 
-#docs = [
-#    "mkquixote @ git+ssh://git@github.com/geopozo/mkquixote",
-#    "mkdocs>=1.6.1",
-#    "mkdocs-material>=9.5.49",
-#]
+docs = [
+    "mkquixote @ git+ssh://git@github.com/geopozo/mkquixote",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.5.49",
+]
 
 [tool.ruff.lint]
 select = ["ALL"]
