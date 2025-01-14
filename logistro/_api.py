@@ -107,7 +107,7 @@ def betterConfig(**kwargs):  # noqa: N802 camel-case like logging
         kwargs["level"] = cli_args.parsed.log.upper()
     logging.basicConfig(**kwargs)
     coerce_logger(logging.getLogger())
-    betterConfig.func_code = (lambda: None).func_code  # function won't run after this
+    betterConfig.__code__ = (lambda: None).__code__  # function won't run after this
 
 
 def getLogger(name=None):  # noqa: N802 camel-case like logging
