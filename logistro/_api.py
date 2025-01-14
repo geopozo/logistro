@@ -51,8 +51,11 @@ structured_formatter = logging.Formatter(json.dumps(_output))
 """A `logging.Formatter()` to print output as JSON for machine consumption."""
 
 
-# We set this as the logging class just to add a debug1 and debug2 function
-class _LogistroLogger(logging.getLoggerClass()):
+# its possible that the user has already changed the base class.
+
+
+# https://github.com/python/mypy/wiki/Unsupported-Python-Features
+class _LogistroLogger(logging.getLoggerClass()):  # type: ignore[misc]
     def debug1(self, msg, *args, **kwargs):
         super().log(logging.DEBUG, msg, *args, stacklevel=2, **kwargs)
 
