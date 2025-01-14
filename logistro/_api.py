@@ -4,6 +4,7 @@ import os
 import platform
 import sys
 from threading import Thread
+from typing import Any, Optional
 
 from logistro import _args as cli_args
 
@@ -17,7 +18,7 @@ logging.addLevelName(DEBUG2, "DEBUG2")
 pipe_attr_blacklist = ["filename", "funcName", "threadName", "taskName"]
 """List of attributes to ignore in getPipeLogger()"""
 
-# Our basic formatting list
+# Our basic formatting listessage with inte
 _output = {
     "time": "%(asctime)s",
     "name": "%(name)s",
@@ -56,27 +57,30 @@ structured_formatter = logging.Formatter(json.dumps(_output))
 
 # https://github.com/python/mypy/wiki/Unsupported-Python-Features
 class _LogistroLogger(logging.getLoggerClass()):  # type: ignore[misc]
-    def debug1(self, msg, *args, **kwargs):
+    def debug1(self, msg: str, *args: Any, **kwargs: Any) -> None:
         super().log(logging.DEBUG, msg, *args, stacklevel=2, **kwargs)
 
-    def debug2(self, msg, *args, **kwargs):
+    def debug2(self, msg: str, *args: Any, **kwargs: Any) -> None:
         super().log(DEBUG2, msg, *args, stacklevel=2, **kwargs)
 
 
 logging.setLoggerClass(_LogistroLogger)
 
 
-def set_human():
+def set_human() -> None:
     """Set `--logistro-human` (default)."""
     cli_args.parsed.human = True
 
 
-def set_structured():
+def set_structured() -> None:
     """Set `--logistro-structured`."""
     cli_args.parsed.human = False
 
 
-def coerce_logger(logger, formatter=None):
+def coerce_logger(
+    logger: logging.Logger,
+    formatter: Optional[logging.Formatter] = None,  # noqa: FA100
+) -> None:
     """
     Set all a logger's formatters to the formatter specified or default.
 
