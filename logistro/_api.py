@@ -146,7 +146,7 @@ FD: TypeAlias = int
 
 def getPipeLogger(  # noqa: N802 camel-case like logging
     name: str,
-    parser: _LoggerFilter,
+    parser: _LoggerFilter | None = None,
     default_level: int = logging.DEBUG,
     ifs: str | bytes = "\n",
 ) -> tuple[FD, logging.Logger]:
