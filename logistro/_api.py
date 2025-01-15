@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import json
 import logging
 import os
 import platform
 import sys
 from threading import Thread
+from typing import Any, Callable, TypeAlias
 
 from logistro import _args as cli_args
 
@@ -17,7 +20,7 @@ logging.addLevelName(DEBUG2, "DEBUG2")
 pipe_attr_blacklist = ["filename", "funcName", "threadName", "taskName"]
 """List of attributes to ignore in getPipeLogger()"""
 
-# Our basic formatting list
+# Our basic formatting listessage with inte
 _output = {
     "time": "%(asctime)s",
     "name": "%(name)s",
@@ -51,29 +54,35 @@ structured_formatter = logging.Formatter(json.dumps(_output))
 """A `logging.Formatter()` to print output as JSON for machine consumption."""
 
 
-# We set this as the logging class just to add a debug1 and debug2 function
-class _LogistroLogger(logging.getLoggerClass()):
-    def debug1(self, msg, *args, **kwargs):
+# its possible that the user has already changed the base class.
+
+
+# https://github.com/python/mypy/wiki/Unsupported-Python-Features
+class _LogistroLogger(logging.getLoggerClass()):  # type: ignore[misc]
+    def debug1(self, msg: str, *args: Any, **kwargs: Any) -> None:
         super().log(logging.DEBUG, msg, *args, stacklevel=2, **kwargs)
 
-    def debug2(self, msg, *args, **kwargs):
+    def debug2(self, msg: str, *args: Any, **kwargs: Any) -> None:
         super().log(DEBUG2, msg, *args, stacklevel=2, **kwargs)
 
 
 logging.setLoggerClass(_LogistroLogger)
 
 
-def set_human():
+def set_human() -> None:
     """Set `--logistro-human` (default)."""
     cli_args.parsed.human = True
 
 
-def set_structured():
+def set_structured() -> None:
     """Set `--logistro-structured`."""
     cli_args.parsed.human = False
 
 
-def coerce_logger(logger, formatter=None):
+def coerce_logger(
+    logger: logging.Logger,
+    formatter: logging.Formatter | None = None,
+) -> None:
     """
     Set all a logger's formatters to the formatter specified or default.
 
@@ -89,18 +98,7 @@ def coerce_logger(logger, formatter=None):
         handler.setFormatter(formatter)
 
 
-def _run_once(f):
-    def betterConfig(*args, **kwargs):  # noqa: N802 camel-case like logging
-        if not betterConfig.has_run:
-            betterConfig.has_run = True
-            f(*args, **kwargs)
-
-    betterConfig.has_run = False
-    return betterConfig
-
-
-@_run_once
-def betterConfig(**kwargs):  # noqa: N802 camel-case like logging
+def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
     """
     Call `logging.basicConfig()` with our defaults.
 
@@ -111,19 +109,28 @@ def betterConfig(**kwargs):  # noqa: N802 camel-case like logging
         kwargs["level"] = cli_args.parsed.log.upper()
     logging.basicConfig(**kwargs)
     coerce_logger(logging.getLogger())
+    betterConfig.__code__ = (lambda: None).__code__  # function won't run after this
 
 
-def getLogger(name=None):  # noqa: N802 camel-case like logging
+def getLogger(name: str | None = None) -> logging.Logger:  # noqa: N802 camel-case like logging
     """Call `logging.getLogger()` but check `betterConfig()` first."""
     betterConfig()
     return logging.getLogger(name)
 
 
+_LoggerFilter = Callable[[logging.LogRecord, dict[str, Any]], bool]
+
+
 class _PipeLoggerFilter:
-    def __init__(self, parser):
+    _parser: _LoggerFilter | None
+
+    def __init__(
+        self,
+        parser: _LoggerFilter | None,
+    ) -> None:
         self._parser = parser
 
-    def filter(self, record):
+    def filter(self, record: logging.LogRecord) -> bool:
         old_info = {}
         for attr in pipe_attr_blacklist:
             if hasattr(record, attr):
@@ -134,12 +141,15 @@ class _PipeLoggerFilter:
         return True
 
 
+FD: TypeAlias = int
+
+
 def getPipeLogger(  # noqa: N802 camel-case like logging
-    name,
-    parser=None,
-    default_level=logging.DEBUG,
-    ifs="\n",
-):
+    name: str,
+    parser: _LoggerFilter | None = None,
+    default_level: int = logging.DEBUG,
+    ifs: str | bytes = "\n",
+) -> tuple[FD, logging.Logger]:
     r"""
     Is a special `getLogger()` which returns a pipe and logger.
 
@@ -161,13 +171,17 @@ def getPipeLogger(  # noqa: N802 camel-case like logging
         A tuple: (pipe, logger)
 
     """
-    ifs = ifs.encode("utf-8")
+    ifs = ifs.encode("utf-8") if isinstance(ifs, str) else ifs
     logger = getLogger(name)
     logger.addFilter(_PipeLoggerFilter(parser))
     r, w = os.pipe()
 
     # needs r, logger, and default_level
-    def read_pipe(r, logger, default_level):
+    def read_pipe(
+        r: int,
+        logger: logging.Logger,
+        default_level: int,
+    ) -> None:
         if bool(sys.version_info[:3] >= (3, 12) or platform.system() != "Windows"):
             os.set_blocking(r, True)
         raw_buffer = b""

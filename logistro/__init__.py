@@ -20,6 +20,8 @@ os.close(pipe)
 ```
 """
 
+import logging
+
 from ._api import (
     DEBUG2,
     betterConfig,
@@ -32,8 +34,28 @@ from ._api import (
     structured_formatter,
 )
 
+CRITICAL = logging.CRITICAL
+"""Equal to logging.CRITICAL level."""
+
+DEBUG = logging.DEBUG
+"""Equal to logging.DEBUG level."""
+
+ERROR = logging.ERROR
+"""Equal to logging.ERROR level."""
+
+INFO = logging.INFO
+"""Equal to logging.INFO level."""
+
+WARNING = logging.WARNING
+"""Equal to logging.WARNING level."""
+
 __all__ = [
+    "CRITICAL",
+    "DEBUG",
     "DEBUG2",
+    "ERROR",
+    "INFO",
+    "WARNING",
     "betterConfig",
     "coerce_logger",
     "getLogger",
