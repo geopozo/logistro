@@ -112,7 +112,7 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
     betterConfig.__code__ = (lambda: None).__code__  # function won't run after this
 
 
-def getLogger(name: str | None = None) -> logging.Logger:  # noqa: N802 camel-case like logging
+def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-case like logging
     """Call `logging.getLogger()` but check `betterConfig()` first."""
     betterConfig()
     return logging.getLogger(name)
@@ -149,7 +149,7 @@ def getPipeLogger(  # noqa: N802 camel-case like logging
     parser: _LoggerFilter | None = None,
     default_level: int = logging.DEBUG,
     ifs: str | bytes = "\n",
-) -> tuple[FD, logging.Logger]:
+) -> tuple[FD, _LogistroLogger]:
     r"""
     Is a special `getLogger()` which returns a pipe and logger.
 
