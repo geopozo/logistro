@@ -5,10 +5,14 @@ import logging
 import os
 import platform
 import sys
+from collections.abc import Callable
 from threading import Thread
-from typing import Any, Callable, TypeAlias, cast
+from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 from logistro import _args as cli_args
+
+if TYPE_CHECKING:
+    from collections.abc import MutableMapping
 
 ## New Constants and Globals
 
@@ -124,21 +128,24 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
     It will overwrite any `format` or `datefmt` arguments passed.
     It is only ever run once.
     """
-    if "level" not in kwargs:
-        kwargs["level"] = cli_args.parsed.log.upper()
-    logging.basicConfig(**kwargs)
-    coerce_logger(logging.getLogger())
+    implicit = kwargs.pop("implicit", False)
+    # its implicitly called and we're already setup
+    if not implicit or not logging.getLogger().handlers:
+        if "level" not in kwargs:
+            kwargs["level"] = cli_args.parsed.log.upper()
+        logging.basicConfig(**kwargs)
+        coerce_logger(logging.getLogger())
     betterConfig.__code__ = (lambda **_kwargs: None).__code__
     # function won't run after this
 
 
 def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-case like logging
     """Call `logging.getLogger()` but check `betterConfig()` first."""
-    betterConfig()
+    betterConfig(implicit=True)
     return cast(_LogistroLogger, logging.getLogger(name))
 
 
-_LoggerFilter = Callable[[logging.LogRecord, dict[str, Any]], bool]
+_LoggerFilter: TypeAlias = Callable[[logging.LogRecord, dict[str, Any]], bool]
 
 
 class _PipeLoggerFilter:
@@ -236,3 +243,52 @@ def getPipeLogger(  # noqa: N802 camel-case like logging
     )
     pipe_reader.start()
     return w, logger
+
+
+class LoggingNode:
+    def __init__(
+        self,
+        name: str,
+        *,
+        logger: logging.Logger | None = None,
+        parent: logging.Logger | None = None,
+    ) -> None:
+        self.logger = logger
+        self._name = name
+        self.children: MutableMapping[str, LoggingNode] = {}
+        self.parent = parent
+
+    def add_child(self, name, logger=None) -> LoggingNode:
+        if logger:
+            if name in self.children:
+                self.children[name].logger = logger
+            else:
+                self.children[name] = LoggingNode(name, logger=logger, parent=self)
+        else:
+            self.children[name] = LoggingNode(name, parent=self)
+        return self.children[name]
+
+    def print(self, indent=0):
+        label = f"{self._name}- {self.logger}"
+        if self.logger and hasattr(self.logger, "handlers"):
+            label += f"- {self.logger.handlers}"
+        print(("-" * indent) + label)  # noqa: T201
+        for _, child in sorted(self.children.items()):
+            child.print(indent + 1)
+
+    def __str__(self):
+        return self._name
+
+
+def describe_logging() -> str:
+    """Print out information about the current logging configuration."""
+    logger = getLogger()
+    root = LoggingNode("root", logger=logger, parent=None)
+    for name, sublogger in logger.manager.loggerDict.items():
+        parent = root
+        nodes = name.split(".")
+        for node in nodes[:-1]:
+            parent = parent.add_child(node)
+        parent.add_child(nodes[-1], sublogger)
+
+    root.print()
