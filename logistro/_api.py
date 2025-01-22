@@ -6,7 +6,7 @@ import os
 import platform
 import sys
 from threading import Thread
-from typing import Any, Callable, TypeAlias
+from typing import Any, Callable, TypeAlias, cast
 
 from logistro import _args as cli_args
 
@@ -20,11 +20,11 @@ logging.addLevelName(DEBUG2, "DEBUG2")
 pipe_attr_blacklist = ["filename", "funcName", "threadName", "taskName"]
 """List of attributes to ignore in getPipeLogger()"""
 
-# Our basic formatting listessage with inte
+# Our basic formatting list
 _output = {
     "time": "%(asctime)s",
-    "name": "%(name)s",
     "level": "%(levelname)s",
+    "name": "%(name)s",
     "file": "%(filename)s",
     "func": "%(funcName)s",
     "task": "%(taskName)s",
@@ -42,13 +42,32 @@ if bool(sys.version_info[:3] < (3, 12)):
 # Make human output a little more readable
 _output_human = _output.copy()
 _output_human["func"] += "()"
+_output_human["time"] = ""
 
-# Generate formatters
-human_formatter = logging.Formatter(
-    ":".join(_output_human.values()),
-    datefmt=_date_string,
-)
-"""A `logging.Formatter()` to print output nicely."""
+
+class HumanFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        # level name
+        result: str = record.levelname + "\t"
+        thread = None if record.threadName == "MainThread" else record.threadName
+        if thread:
+            result += f"Thread({thread}) "
+        task = record.taskName if hasattr(record, "taskName") else None
+        if task:
+            result += f"Task({task}) "
+        mod = record.name or ""
+        filename = record.filename or ""
+        result += f"{mod}:{filename}"
+        func = record.funcName or None
+        if func:
+            result += f":{func}()"
+        message = record.msg % record.args
+        result += f"- {message}"
+
+        return result
+
+
+human_formatter = HumanFormatter()
 
 structured_formatter = logging.Formatter(json.dumps(_output))
 """A `logging.Formatter()` to print output as JSON for machine consumption."""
@@ -109,13 +128,14 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
         kwargs["level"] = cli_args.parsed.log.upper()
     logging.basicConfig(**kwargs)
     coerce_logger(logging.getLogger())
-    betterConfig.__code__ = (lambda: None).__code__  # function won't run after this
+    betterConfig.__code__ = (lambda **_kwargs: None).__code__
+    # function won't run after this
 
 
 def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-case like logging
     """Call `logging.getLogger()` but check `betterConfig()` first."""
     betterConfig()
-    return logging.getLogger(name)
+    return cast(_LogistroLogger, logging.getLogger(name))
 
 
 _LoggerFilter = Callable[[logging.LogRecord, dict[str, Any]], bool]
