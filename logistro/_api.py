@@ -5,10 +5,14 @@ import logging
 import os
 import platform
 import sys
+from collections.abc import Callable
 from threading import Thread
-from typing import Any, Callable, TypeAlias
+from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 from logistro import _args as cli_args
+
+if TYPE_CHECKING:
+    from collections.abc import MutableMapping
 
 ## New Constants and Globals
 
@@ -20,11 +24,11 @@ logging.addLevelName(DEBUG2, "DEBUG2")
 pipe_attr_blacklist = ["filename", "funcName", "threadName", "taskName"]
 """List of attributes to ignore in getPipeLogger()"""
 
-# Our basic formatting listessage with inte
+# Our basic formatting list
 _output = {
     "time": "%(asctime)s",
-    "name": "%(name)s",
     "level": "%(levelname)s",
+    "name": "%(name)s",
     "file": "%(filename)s",
     "func": "%(funcName)s",
     "task": "%(taskName)s",
@@ -42,13 +46,32 @@ if bool(sys.version_info[:3] < (3, 12)):
 # Make human output a little more readable
 _output_human = _output.copy()
 _output_human["func"] += "()"
+_output_human["time"] = ""
 
-# Generate formatters
-human_formatter = logging.Formatter(
-    ":".join(_output_human.values()),
-    datefmt=_date_string,
-)
-"""A `logging.Formatter()` to print output nicely."""
+
+class HumanFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        # level name
+        result: str = record.levelname + "\t"
+        thread = None if record.threadName == "MainThread" else record.threadName
+        if thread:
+            result += f"Thread({thread}) "
+        task = record.taskName if hasattr(record, "taskName") else None
+        if task:
+            result += f"Task({task}) "
+        mod = record.name or ""
+        filename = record.filename or ""
+        result += f"{mod}:{filename}"
+        func = record.funcName or None
+        if func:
+            result += f":{func}()"
+        message = record.msg % record.args
+        result += f"- {message}"
+
+        return result
+
+
+human_formatter = HumanFormatter()
 
 structured_formatter = logging.Formatter(json.dumps(_output))
 """A `logging.Formatter()` to print output as JSON for machine consumption."""
@@ -105,20 +128,24 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
     It will overwrite any `format` or `datefmt` arguments passed.
     It is only ever run once.
     """
-    if "level" not in kwargs:
-        kwargs["level"] = cli_args.parsed.log.upper()
-    logging.basicConfig(**kwargs)
-    coerce_logger(logging.getLogger())
-    betterConfig.__code__ = (lambda: None).__code__  # function won't run after this
+    implicit = kwargs.pop("implicit", False)
+    # its implicitly called and we're already setup
+    if not implicit or not logging.getLogger().handlers:
+        if "level" not in kwargs:
+            kwargs["level"] = cli_args.parsed.log.upper()
+        logging.basicConfig(**kwargs)
+        coerce_logger(logging.getLogger())
+    betterConfig.__code__ = (lambda **_kwargs: None).__code__
+    # function won't run after this
 
 
 def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-case like logging
     """Call `logging.getLogger()` but check `betterConfig()` first."""
-    betterConfig()
-    return logging.getLogger(name)
+    betterConfig(implicit=True)
+    return cast(_LogistroLogger, logging.getLogger(name))
 
 
-_LoggerFilter = Callable[[logging.LogRecord, dict[str, Any]], bool]
+_LoggerFilter: TypeAlias = Callable[[logging.LogRecord, dict[str, Any]], bool]
 
 
 class _PipeLoggerFilter:
@@ -216,3 +243,52 @@ def getPipeLogger(  # noqa: N802 camel-case like logging
     )
     pipe_reader.start()
     return w, logger
+
+
+class LoggingNode:
+    def __init__(
+        self,
+        name: str,
+        *,
+        logger: logging.Logger | None = None,
+        parent: logging.Logger | None = None,
+    ) -> None:
+        self.logger = logger
+        self._name = name
+        self.children: MutableMapping[str, LoggingNode] = {}
+        self.parent = parent
+
+    def add_child(self, name, logger=None) -> LoggingNode:
+        if logger:
+            if name in self.children:
+                self.children[name].logger = logger
+            else:
+                self.children[name] = LoggingNode(name, logger=logger, parent=self)
+        else:
+            self.children[name] = LoggingNode(name, parent=self)
+        return self.children[name]
+
+    def print(self, indent=0):
+        label = f"{self._name}- {self.logger}"
+        if self.logger and hasattr(self.logger, "handlers"):
+            label += f"- {self.logger.handlers}"
+        print(("-" * indent) + label)  # noqa: T201
+        for _, child in sorted(self.children.items()):
+            child.print(indent + 1)
+
+    def __str__(self):
+        return self._name
+
+
+def describe_logging() -> str:
+    """Print out information about the current logging configuration."""
+    logger = getLogger()
+    root = LoggingNode("root", logger=logger, parent=None)
+    for name, sublogger in logger.manager.loggerDict.items():
+        parent = root
+        nodes = name.split(".")
+        for node in nodes[:-1]:
+            parent = parent.add_child(node)
+        parent.add_child(nodes[-1], sublogger)
+
+    root.print()
