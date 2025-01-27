@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
       # must actually checkout for version determination
+      - run: git pull
       - run: git checkout ${{ github.head_ref }}
       - run: uv python install ${{ matrix.python_v }}
       - run: uv python pin ${{ matrix.python_v }}
