@@ -2,9 +2,7 @@
 ---
 name: test-n-build
 on:
-  push:
-    tags:
-      - v*
+  pull_request
 jobs:
   super-test:
     strategy:
