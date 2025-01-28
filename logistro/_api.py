@@ -251,14 +251,14 @@ class LoggingNode:
         name: str,
         *,
         logger: logging.Logger | None = None,
-        parent: logging.Logger | None = None,
+        parent: LoggingNode | None = None,
     ) -> None:
         self.logger = logger
         self._name = name
         self.children: MutableMapping[str, LoggingNode] = {}
         self.parent = parent
 
-    def add_child(self, name, logger=None) -> LoggingNode:
+    def add_child(self, name: str, logger: logging.Logger | None = None) -> LoggingNode:
         if logger:
             if name in self.children:
                 self.children[name].logger = logger
@@ -268,7 +268,7 @@ class LoggingNode:
             self.children[name] = LoggingNode(name, parent=self)
         return self.children[name]
 
-    def print(self, indent=0):
+    def print(self, indent: int = 0) -> None:
         label = f"{self._name}- {self.logger}"
         if self.logger and hasattr(self.logger, "handlers"):
             label += f"- {self.logger.handlers}"
@@ -276,11 +276,11 @@ class LoggingNode:
         for _, child in sorted(self.children.items()):
             child.print(indent + 1)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._name
 
 
-def describe_logging() -> str:
+def describe_logging() -> None:
     """Print out information about the current logging configuration."""
     logger = getLogger()
     root = LoggingNode("root", logger=logger, parent=None)
