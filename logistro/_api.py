@@ -7,7 +7,7 @@ import platform
 import sys
 from collections.abc import Callable
 from threading import Thread
-from typing import TYPE_CHECKING, Any, TypeAlias, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from logistro import _args as cli_args
 
@@ -145,7 +145,7 @@ def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-c
     return cast(_LogistroLogger, logging.getLogger(name))
 
 
-_LoggerFilter: TypeAlias = Callable[[logging.LogRecord, dict[str, Any]], bool]
+_LoggerFilter = Callable[[logging.LogRecord, dict[str, Any]], bool]
 
 
 class _PipeLoggerFilter:
@@ -168,7 +168,7 @@ class _PipeLoggerFilter:
         return True
 
 
-FD: TypeAlias = int
+FD = int
 
 
 def getPipeLogger(  # noqa: N802 camel-case like logging
