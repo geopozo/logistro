@@ -2,7 +2,9 @@
 ---
 name: test-n-build
 on:
-  pull_request
+  push:
+    tags:
+      - v*
 jobs:
   super-test:
     strategy:
@@ -15,8 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
       # must actually checkout for version determination
-      - run: git fetch --all
-      - run: git checkout ${{ github.head_ref }}
+      - run: git checkout ${{ github.ref_name }}
       - run: uv python install ${{ matrix.python_v }}
       - run: uv python pin ${{ matrix.python_v }}
       # don't modify sync file! messes up version!
