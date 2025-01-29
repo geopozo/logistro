@@ -20,6 +20,7 @@ jobs:
       - run: git checkout ${{ github.ref_name }}
       - run: uv python install ${{ matrix.python_v }}
       - run: uv python pin ${{ matrix.python_v }}
+        if: ${{ matrix.python_v != '' }}
       # don't modify sync file! messes up version!
       - run: uv sync --all-extras --dev --frozen # ah order here matters?
       - run: uv build
@@ -68,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: testpypi
-      url: https://pypi.org/p/logistro
+      url: https://test.pypi.org/p/logistro
     # Signs this workflow so pypi trusts it
     permissions:
       id-token: write
