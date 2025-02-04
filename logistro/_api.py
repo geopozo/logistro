@@ -69,7 +69,7 @@ class HumanFormatter(logging.Formatter):
         message = str(record.msg) % record.args
         result += f"- {message}"
         if record.exc_info:
-            result += f"\n{''.join(traceback.format_tb(record.exc_info[2]))}"
+            result += f"\n {' '.join(traceback.format_exception(*record.exc_info))}"
 
         return result
 
