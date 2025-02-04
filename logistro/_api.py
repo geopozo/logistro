@@ -5,6 +5,7 @@ import logging
 import os
 import platform
 import sys
+import traceback
 from collections.abc import Callable
 from threading import Thread
 from typing import TYPE_CHECKING, Any, cast
@@ -65,8 +66,10 @@ class HumanFormatter(logging.Formatter):
         func = record.funcName or None
         if func:
             result += f":{func}()"
-        message = record.msg % record.args
+        message = str(record.msg) % record.args
         result += f"- {message}"
+        if record.exc_info:
+            result += f"\n{''.join(traceback.format_tb(record.exc_info[2]))}"
 
         return result
 
