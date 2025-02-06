@@ -34,6 +34,7 @@ from ._api import (
     set_structured,
     structured_formatter,
 )
+from ._args import parser
 
 CRITICAL = logging.CRITICAL
 """Equal to logging.CRITICAL level."""
@@ -63,6 +64,7 @@ __all__ = [
     "getLogger",
     "getPipeLogger",
     "human_formatter",
+    "parser",
     "set_human",
     "set_structured",
     "structured_formatter",

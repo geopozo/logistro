@@ -7,9 +7,10 @@ if "--logistro-human" in sys.argv and "--logistro-structured" in sys.argv:
         "Choose either '--logistro-human' or '--logistro-structured'.",
     )
 
-parser = argparse.ArgumentParser(
-    add_help=True,
-)
+parser = argparse.ArgumentParser(add_help=False)
+"""The argsparse parser is exported if you'd like to include it as a parent in your own
+`argparse.ArgumentParser` and thereby getting better help messages."""
+
 parser.add_argument(
     "--logistro-human",
     action="store_true",
@@ -28,8 +29,8 @@ parser.add_argument(
     "--logistro-level",
     default="WARNING",
     dest="log",
-    help="Set the logging level",
+    help="Set the logging level (default WARNING)",
 )
 
 # Get the Format
-parsed, _ = parser.parse_known_intermixed_args(sys.argv)
+parsed, _ = parser.parse_known_args()
