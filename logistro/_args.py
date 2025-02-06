@@ -33,4 +33,4 @@ parser.add_argument(
 )
 
 # Get the Format
-parsed, _ = parser.parse_known_intermixed_args(sys.argv)
+parsed, _ = parser.parse_known_args()
