@@ -5,6 +5,18 @@
 It also includes `getPipeLogger()` which can be passed to `Popen()` so that its
 `stderr` is piped to the already thread-safe `logging` library.
 
+## Which logger level should I use?
+
+`debug2` I use if I'm in a situation where it's okay to dump large amounts of
+information. I'm planning on scrolling.
+
+`info` I will maybe use at the beginning and end of functions called.
+
+`debug` Might print stuff from inside functions or it might print shortened
+versioning of `debug2`.
+
+Warning, Error, Critical, Exception, these are all more obvious.
+
 ## Quickstart
 
 ```python
