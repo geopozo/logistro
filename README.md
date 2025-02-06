@@ -33,6 +33,12 @@ os.close(pipe) # eventually
 * `--logistro-human` (default)
 * `--logistro-structured` which outputs JSON
 
+The help for CLI commands can be included in your program:
+
+```
+parser = argparse.ArgumentParser(parents=[logistro.parser])
+```
+
 ### Functions
 
 * `logistro.set_structured()`
