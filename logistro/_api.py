@@ -66,7 +66,7 @@ class HumanFormatter(logging.Formatter):
         func = record.funcName or None
         if func:
             result += f":{func}()"
-        message = str(record.msg) % record.args
+        message = str(record.msg) % record.args if record.args else str(record.msg)
         result += f"- {message}"
         if record.exc_info:
             result += f"\n {' '.join(traceback.format_exception(*record.exc_info))}"
