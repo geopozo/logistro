@@ -13,7 +13,7 @@ name = "logistro"
 description = "Simple wrapper over logging for a couple basic features"
 dynamic = ["version"]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 authors = [
   {name = "Andrew Pikul", email="ajpikul@gmail.com"},
   {name = "Neyberson Atencio", email="neyberatencio@gmail.com"}
@@ -28,10 +28,10 @@ Repository = "https://github.com/geopozo/logistro"
 
 [dependency-groups]
 dev = [
-    "poethepoet>=0.31.1",
     "pytest-xdist",
     "pytest>=8.3.4",
     "mypy>=1.14.1",
+    "poethepoet>=0.30.0",
 ]
 
 # uv doens't allow dependency groups to have separate python requirements
