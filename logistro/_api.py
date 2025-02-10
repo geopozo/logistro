@@ -6,9 +6,8 @@ import os
 import platform
 import sys
 import traceback
-from collections.abc import Callable
 from threading import Thread
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Callable, Dict, cast
 
 from logistro import _args as cli_args
 
@@ -148,7 +147,7 @@ def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-c
     return cast(_LogistroLogger, logging.getLogger(name))
 
 
-_LoggerFilter = Callable[[logging.LogRecord, dict[str, Any]], bool]
+_LoggerFilter = Callable[[logging.LogRecord, Dict[str, Any]], bool]
 
 
 class _PipeLoggerFilter:
