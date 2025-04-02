@@ -147,7 +147,7 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
 def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-case like logging
     """Call `logging.getLogger()` but check `betterConfig()` first."""
     betterConfig(implicit=True)
-    return cast(_LogistroLogger, logging.getLogger(name))
+    return cast("_LogistroLogger", logging.getLogger(name))
 
 
 _LoggerFilter = Callable[[logging.LogRecord, Dict[str, Any]], bool]
