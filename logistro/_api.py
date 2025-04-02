@@ -134,7 +134,10 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
     # its implicitly called and we're already setup
     if not implicit or not logging.getLogger().handlers:
         if "level" not in kwargs and cli_args.parsed.log:
-            kwargs["level"] = cli_args.parsed.log.upper()
+            if cli_args.parsed.log.isnumeric():
+                kwargs["level"] = int(cli_args.parsed.log)
+            else:
+                kwargs["level"] = cli_args.parsed.log.upper()
         logging.basicConfig(**kwargs)
         coerce_logger(logging.getLogger())
     betterConfig.__code__ = (lambda **_kwargs: None).__code__

@@ -30,6 +30,7 @@ parser.add_argument(
 parser.add_argument(
     "--logistro-level",
     default=None,
+    type=str,
     dest="log",
     help="Set the logging level (no default, fallback to system default)",
 )
