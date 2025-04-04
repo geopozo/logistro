@@ -29,9 +29,10 @@ parser.add_argument(
 
 parser.add_argument(
     "--logistro-level",
-    default="WARNING",
+    default=None,
+    type=str,
     dest="log",
-    help="Set the logging level (default WARNING)",
+    help="Set the logging level (no default, fallback to system default)",
 )
 
 # Get the Format

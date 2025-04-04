@@ -133,8 +133,11 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
     implicit = kwargs.pop("implicit", False)
     # its implicitly called and we're already setup
     if not implicit or not logging.getLogger().handlers:
-        if "level" not in kwargs:
-            kwargs["level"] = cli_args.parsed.log.upper()
+        if "level" not in kwargs and cli_args.parsed.log:
+            if cli_args.parsed.log.isnumeric():
+                kwargs["level"] = int(cli_args.parsed.log)
+            else:
+                kwargs["level"] = cli_args.parsed.log.upper()
         logging.basicConfig(**kwargs)
         coerce_logger(logging.getLogger())
     betterConfig.__code__ = (lambda **_kwargs: None).__code__
@@ -144,7 +147,7 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
 def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-case like logging
     """Call `logging.getLogger()` but check `betterConfig()` first."""
     betterConfig(implicit=True)
-    return cast(_LogistroLogger, logging.getLogger(name))
+    return cast("_LogistroLogger", logging.getLogger(name))
 
 
 _LoggerFilter = Callable[[logging.LogRecord, Dict[str, Any]], bool]
