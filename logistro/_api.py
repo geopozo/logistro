@@ -85,10 +85,12 @@ structured_formatter = logging.Formatter(json.dumps(_output))
 # https://github.com/python/mypy/wiki/Unsupported-Python-Features
 class _LogistroLogger(logging.getLoggerClass()):  # type: ignore[misc]
     def debug1(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        super().log(logging.DEBUG, msg, *args, stacklevel=2, **kwargs)
+        stacklevel = kwargs.pop("stacklevel", 0) + 2
+        super().log(logging.DEBUG, msg, *args, stacklevel=stacklevel, **kwargs)
 
     def debug2(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        super().log(DEBUG2, msg, *args, stacklevel=2, **kwargs)
+        stacklevel = kwargs.pop("stacklevel", 0) + 2
+        super().log(DEBUG2, msg, *args, stacklevel=stacklevel, **kwargs)
 
 
 logging.setLoggerClass(_LogistroLogger)
