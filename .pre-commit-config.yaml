@@ -84,3 +84,7 @@ repos:
         # args: []
         # To automatically fix issues:
         # args: [--fix]
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.405   # pin a tag; latest as of 2025-10-01
+    hooks:
+      - id: pyright
