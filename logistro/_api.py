@@ -36,35 +36,36 @@ _output = {
     "message": "%(message)s",
 }
 
-# A more readable, human readable string
-_date_string = "%a, %d-%b %H:%M:%S"
-
 # async taskName not supported below 3.12, remove it
 if bool(sys.version_info[:3] < (3, 12)):
     del _output["task"]
 
-# Make human output a little more readable
-_output_human = _output.copy()
-_output_human["func"] += "()"
-_output_human["time"] = ""
+# A more readable, human readable string
+_date_string = "%a, %d-%b %H:%M:%S"
 
 
 class HumanFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
-        # level name
+        # Add level
         result: str = record.levelname + "\t"
-        thread = None if record.threadName == "MainThread" else record.threadName
-        if thread:
-            result += f"Thread({thread}) "
-        task = record.taskName if hasattr(record, "taskName") else None
-        if task:
-            result += f"Task({task}) "
-        mod = record.name or ""
+
+        # Add threadname
+        result += (
+            f"Thread({record.threadName})." if record.threadName != "MainThread" else ""
+        )
+
+        # Add taskname
+        result += f"Task({record.taskName})." if hasattr(record, "taskName") else ""  # type: ignore[reportAttributeAccessError]
+
+        # Add module/package + filename
+        module = record.name or ""
         filename = record.filename or ""
-        result += f"{mod}:{filename}"
-        func = record.funcName or None
-        if func:
-            result += f":{func}()"
+        result += f"{module}.{filename}"
+
+        # Add function name
+        result += f".{record.funcName}" if record.funcName else ""
+
+        # Add message
         message = str(record.msg) % record.args if record.args else str(record.msg)
         result += f"- {message}"
         if record.exc_info:
@@ -77,9 +78,6 @@ human_formatter = HumanFormatter()
 
 structured_formatter = logging.Formatter(json.dumps(_output))
 """A `logging.Formatter()` to print output as JSON for machine consumption."""
-
-
-# its possible that the user has already changed the base class.
 
 
 # https://github.com/python/mypy/wiki/Unsupported-Python-Features
@@ -173,7 +171,7 @@ def getPipeLogger(  # noqa: N802 camel-case like logging
         parser: a function whose first parameter is a `LogRecord` to modify it.
             If it doesn't return `True`, the whole record is ignored.
             The second parameter is a dictionary of already filtered info.
-            See `pipe_attr_blacklist` in `custom_logging.py`.
+            See keys `pipe_attr_blacklist` in `logistro._api`.
         default_level: the default level for the logger.
         ifs: The character used as delimiter for pipe reads, defaults:"\n".
 
