@@ -68,8 +68,19 @@ class HumanFormatter(logging.Formatter):
         # Add message
         message = str(record.msg) % record.args if record.args else str(record.msg)
         result += f"- {message}"
-        if record.exc_info:
-            result += f"\n {' '.join(traceback.format_exception(*record.exc_info))}"
+        if exc := record.exc_info:
+            if exc is True:
+                etuple = sys.exc_info()
+            elif isinstance(exc, BaseException):
+                # don't need to do this for format_exception after 3.10
+                etuple = (type(exc), exc, exc.__traceback__)
+            elif isinstance(exc, tuple):
+                etuple = exc
+            else:
+                raise ValueError(
+                    f"exc_info passed value of type {type(record.exc_info)}",
+                )
+            result += f"\n {' '.join(traceback.format_exception(*etuple))}"
 
         return result
 
