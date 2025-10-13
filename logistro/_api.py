@@ -74,9 +74,9 @@ class HumanFormatter(logging.Formatter):
         return result
 
 
-human_formatter = HumanFormatter()
+human_formatter: HumanFormatter = HumanFormatter()
 
-structured_formatter = logging.Formatter(json.dumps(_output))
+structured_formatter: logging.Formatter = logging.Formatter(json.dumps(_output))
 """A `logging.Formatter()` to print output as JSON for machine consumption."""
 
 
