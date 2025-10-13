@@ -106,25 +106,6 @@ def set_structured() -> None:
     cli_args.parsed.human = False
 
 
-def coerce_logger(
-    logger: logging.Logger,
-    formatter: logging.Formatter | None = None,
-) -> None:
-    """
-    Set all a logger's formatters to the formatter specified or default.
-
-    Args:
-        logger: The logger to coerce
-        formatter: The `logging.Formatter()` object to use- defaults to
-            human_formatter or structured_formatter.
-
-    """
-    if not formatter:
-        formatter = human_formatter if cli_args.parsed.human else structured_formatter
-    for handler in logger.handlers:
-        handler.setFormatter(formatter)
-
-
 def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
     """
     Call `logging.basicConfig()` with our defaults.
@@ -132,23 +113,18 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
     It will overwrite any `format` or `datefmt` arguments passed.
     It is only ever run once.
     """
-    implicit = kwargs.pop("implicit", False)
-    # its implicitly called and we're already setup
-    if not implicit or not logging.getLogger().handlers:
-        if "level" not in kwargs and cli_args.parsed.log:
-            if cli_args.parsed.log.isnumeric():
-                kwargs["level"] = int(cli_args.parsed.log)
-            else:
-                kwargs["level"] = cli_args.parsed.log.upper()
-        logging.basicConfig(**kwargs)
-        coerce_logger(logging.getLogger())
+    if "level" not in kwargs and cli_args.parsed.log:
+        if cli_args.parsed.log.isnumeric():
+            kwargs["level"] = int(cli_args.parsed.log)
+        else:
+            kwargs["level"] = cli_args.parsed.log.upper()
+    logging.basicConfig(**kwargs)
     betterConfig.__code__ = (lambda **_kwargs: None).__code__
     # function won't run after this
 
 
 def getLogger(name: str | None = None) -> _LogistroLogger:  # noqa: N802 camel-case like logging
     """Call `logging.getLogger()` but check `betterConfig()` first."""
-    betterConfig(implicit=True)
     return cast("_LogistroLogger", logging.getLogger(name))
 
 

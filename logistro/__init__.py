@@ -25,7 +25,6 @@ import logging
 from ._api import (
     DEBUG2,
     betterConfig,
-    coerce_logger,
     describe_logging,
     getLogger,
     getPipeLogger,
@@ -59,7 +58,6 @@ __all__ = [
     "INFO",
     "WARNING",
     "betterConfig",
-    "coerce_logger",
     "describe_logging",
     "getLogger",
     "getPipeLogger",
