@@ -36,4 +36,4 @@ parser.add_argument(
 )
 
 # Get the Format
-parsed, _ = parser.parse_known_args()
+parsed, remaining_args = parser.parse_known_args()
