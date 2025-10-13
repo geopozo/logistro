@@ -1,3 +1,7 @@
+v2.0.0
+- Remove all import-time side effects: Users must now
+  call `logistro.betterConfig()` manually.
+- Improve processing of exc_info.
 v1.1.0
 - Allow users to set their own stacklevel
 v1.0.12
