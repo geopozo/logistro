@@ -14,12 +14,13 @@ In simple usage, usually only the root logger has a handler.
 
 * Changing the format mid-program means finding all the (relevant?) handlers
 in the tree. `pytest` for example attaches other handlers so it can capture
-logging. Our `better_config()` will set our format on the root logger's handlers.
+logging. Our `better_config()` will set our format on the root logger's
+handlers.
 
 * You cannot attach two formatters to a handler
 * Two handlers cannot access the same file
 
 Having both those be true simultaneously presents problems.
 
-For our process logger, where a lot of context is erronenous,
+For our process logger, where a lot of context is erroneous,
 we strip useless data from the process logger by using a filter.
