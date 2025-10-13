@@ -266,6 +266,8 @@ def describe_logging() -> None:
     logger = getLogger()
     root = LoggingNode("root", logger=logger, parent=None)
     for name, sublogger in logger.manager.loggerDict.items():
+        if not isinstance(sublogger, logging.Logger):
+            continue
         parent = root
         nodes = name.split(".")
         for node in nodes[:-1]:

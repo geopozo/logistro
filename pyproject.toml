@@ -31,8 +31,8 @@ Repository = "https://github.com/geopozo/logistro"
 dev = [
     "pytest-xdist",
     "pytest>=8.3.4",
-    "mypy>=1.14.1",
     "poethepoet>=0.30.0",
+    "pyright>=1.1.406",
 ]
 
 # uv doens't allow dependency groups to have separate python requirements
