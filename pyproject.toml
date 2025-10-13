@@ -8,9 +8,6 @@ find = {namespaces = false}
 [tool.setuptools-git-versioning]
 enabled = true
 
-[tool.setuptools.package-data]
-"logistro" = ["py.typed"]
-
 [project]
 name = "logistro"
 description = "Simple wrapper over logging for a couple basic features"
