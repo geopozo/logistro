@@ -128,15 +128,14 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
         else:
             kwargs["level"] = cli_args.parsed.log.upper()
 
-    if "format" not in kwargs:
-        kwargs["format"] = (
-            human_formatter if cli_args.parsed.human else structured_formatter
-        )
-
     if "datefmt" not in kwargs:
         kwargs["datefmt"] = _date_string
 
     logging.basicConfig(**kwargs)
+    if "format" not in kwargs:
+        logging.getLogger().handlers[0].setFormatter(
+            human_formatter if cli_args.parsed.human else structured_formatter,
+        )
 
     betterConfig.__code__ = (lambda **_kwargs: None).__code__
     # function won't run after this
@@ -197,7 +196,8 @@ def getPipeLogger(  # noqa: N802 camel-case like logging
         ifs: The character used as delimiter for pipe reads, defaults:"\n".
 
     Returns:
-        A tuple: (pipe, logger)
+        A tuple: (pipe, logger). The pipe can be closed immediately after
+            passing it to the writing process.
 
     """
     ifs = ifs.encode("utf-8") if isinstance(ifs, str) else ifs
@@ -214,29 +214,32 @@ def getPipeLogger(  # noqa: N802 camel-case like logging
         if bool(sys.version_info[:3] >= (3, 12) or platform.system() != "Windows"):
             os.set_blocking(r, True)
         raw_buffer = b""
-        while True:
-            try:
-                last_size = len(raw_buffer)
-                raw_buffer += os.read(
-                    r,
-                    1000,
-                )
-                if last_size == len(raw_buffer):
-                    # Just move us to exception mode
-                    raise Exception("")  # noqa: TRY002,TRY301
-            # Catch any exception, its all weird OS stuff, the game is up
-            except Exception:  # noqa: BLE001
+        try:
+            while True:
+                try:
+                    last_size = len(raw_buffer)
+                    raw_buffer += os.read(
+                        r,
+                        1000,
+                    )
+                    if last_size == len(raw_buffer):
+                        # Just move us to exception mode
+                        raise Exception("")  # noqa: TRY002,TRY301
+                # Catch any exception, its all weird OS stuff, the game is up
+                except Exception:  # noqa: BLE001
+                    while raw_buffer:
+                        line, _, raw_buffer = raw_buffer.partition(ifs)
+                        if line:
+                            logger.log(default_level, line.decode())
+                    return
                 while raw_buffer:
-                    line, _, raw_buffer = raw_buffer.partition(ifs)
-                    if line:
-                        logger.log(default_level, line.decode())
-                return
-            while raw_buffer:
-                line, m, raw_buffer = raw_buffer.partition(ifs)
-                if not m:
-                    raw_buffer = line
-                    break
-                logger.log(default_level, line.decode())
+                    line, m, raw_buffer = raw_buffer.partition(ifs)
+                    if not m:
+                        raw_buffer = line
+                        break
+                    logger.log(default_level, line.decode())
+        finally:
+            os.close(r)
 
     pipe_reader = Thread(
         target=read_pipe,
