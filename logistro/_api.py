@@ -128,15 +128,14 @@ def betterConfig(**kwargs: Any) -> None:  # noqa: N802 camel-case like logging
         else:
             kwargs["level"] = cli_args.parsed.log.upper()
 
-    if "format" not in kwargs:
-        kwargs["format"] = (
-            human_formatter if cli_args.parsed.human else structured_formatter
-        )
-
     if "datefmt" not in kwargs:
         kwargs["datefmt"] = _date_string
 
     logging.basicConfig(**kwargs)
+    if "format" not in kwargs:
+        logging.getLogger().handlers[0].setFormatter(
+            human_formatter if cli_args.parsed.human else structured_formatter,
+        )
 
     betterConfig.__code__ = (lambda **_kwargs: None).__code__
     # function won't run after this
